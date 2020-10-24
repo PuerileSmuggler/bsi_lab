@@ -1,16 +1,20 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { AuthService } from './auth/auth.service';
 import db from './database/initializeDatabase';
-import { User } from './database/models/User';
 import { RegisterUserDTO } from './dto/User';
 
 @Injectable()
 export class AppService {
-  async createUser(user: RegisterUserDTO): Promise<User> {
-    console.log(user);
+  constructor(private authService: AuthService) {}
+  async createUser(user: RegisterUserDTO) {
+    const salt = Math.random().toString(36).substr(2, 5);
     return await db.User.create({
-      ...user,
-      salt: 'test',
-      isPasswordKeptAsHash: true,
+      login: user.login,
+      password: this.authService.hashPassword('hmac', user.password, salt),
+      salt,
+      isPasswordKeptAsHash: user.encryption === 'hmac' ? true : false,
+    }).catch((error) => {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
     });
   }
 }

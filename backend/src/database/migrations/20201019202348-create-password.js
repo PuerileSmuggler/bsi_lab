@@ -34,6 +34,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('passwords');
+    await queryInterface.dropTable('Passwords');
   },
 };

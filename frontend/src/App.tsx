@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 import { AppDiv, AppTitle } from "./App.styled";
 import PrivateRoute from "./components/router/PrivateRoute";
+import PublicRoute from "./components/router/PublicRoute";
 import Logincontainer from "./containers/login/LoginContainer";
 import Walletcontainer from "./containers/WalletContainer";
 
@@ -14,12 +15,12 @@ class App extends Component {
           <AppTitle variant="h4">Pamsword Wallet</AppTitle>
         </AppBar>
         <Switch>
-          <Route exact path="/login">
+          <PublicRoute exact path="/login" to="/home">
             <Logincontainer />
-          </Route>
-          <Route exact path="/register">
+          </PublicRoute>
+          <PublicRoute exact path="/register" to="/home">
             <Logincontainer register />
-          </Route>
+          </PublicRoute>
           <PrivateRoute exact path="/home" to="/login">
             <Walletcontainer />
           </PrivateRoute>

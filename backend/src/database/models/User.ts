@@ -64,6 +64,7 @@ export default function (sequelize: Sequelize): typeof User {
       login: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
       },
       password: {
         type: DataTypes.STRING,
