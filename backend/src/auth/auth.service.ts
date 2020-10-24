@@ -46,4 +46,13 @@ export class AuthService {
           .update(passwordString)
           .digest('hex');
   }
+
+  encodePassword(password: string, key: string): string {
+    const iv = 'V8MMkXs5pkVxzUr7';
+    const cipher = crypto.createCipheriv('aes-256-gcm', key.substr(0, 32), iv);
+    let buffer = cipher.update(password, 'utf8', 'hex');
+    buffer += cipher.final('hex');
+    console.log(buffer);
+    return buffer;
+  }
 }

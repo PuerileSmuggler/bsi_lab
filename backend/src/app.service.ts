@@ -23,14 +23,18 @@ export class AppService {
   }
 
   async createPassword(user: UserCredentials, password: CreatePasswordDTO) {
+    const key = (
+      await db.User.findOne({
+        where: {
+          id: user.id,
+        },
+      })
+    ).password;
     return await db.Password.create({
       userId: user.id,
-      webAddress: password.webAddress,
-      description: password.description,
-      login: password.login,
-      password: password.password,
+      ...password,
+      password: this.authService.encodePassword(password.password, key),
     }).catch((error) => {
-      console.log(error.message);
       throw new HttpException(error, HttpStatus.BAD_REQUEST);
     });
   }

@@ -1,5 +1,6 @@
 export interface IUserState {
   auth: boolean;
+  passwords: Array<CreatePasswordPayload>;
 }
 
 export interface LoginUserPayload {

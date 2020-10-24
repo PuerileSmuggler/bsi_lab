@@ -4,6 +4,9 @@ import { catchError, switchMap } from "rxjs/operators";
 import { request, tokenStorageKey } from "../../utils/api";
 import {
   createPassword,
+  getAllPasswords,
+  getAllPasswordsError,
+  getAllPasswordsSuccess,
   loginUser,
   loginUserError,
   loginUserSuccess,
@@ -18,7 +21,7 @@ export const loginEpic: Epic = (action$) =>
   action$.pipe(
     ofType(loginUser.type),
     switchMap(({ payload }) =>
-      from(request("auth/login", payload)).pipe(
+      from(request("auth/login", "POST", payload)).pipe(
         switchMap((response) =>
           from(response.json()).pipe(
             switchMap((body) => {
@@ -41,7 +44,7 @@ export const registerEpic: Epic = (action$, {}, { history }) =>
   action$.pipe(
     ofType(registerUser.type),
     switchMap(({ payload }) =>
-      from(request("auth/register", payload)).pipe(
+      from(request("auth/register", "POST", payload)).pipe(
         switchMap(() => {
           history.push("/login");
           return of(registerUserSuccess("Successfully created an account"));
@@ -57,7 +60,7 @@ export const createPasswordEpic: Epic = (action$) =>
   action$.pipe(
     ofType(createPassword.type),
     switchMap(({ payload }) =>
-      from(request("password/create", payload)).pipe(
+      from(request("password/create", "POST", payload)).pipe(
         switchMap(() => {
           return of(
             registerUserSuccess("Successfully created a password entry")
@@ -66,6 +69,25 @@ export const createPasswordEpic: Epic = (action$) =>
         catchError((error) => {
           return of(loginUserError(error));
         })
+      )
+    )
+  );
+
+export const getPasswordsEpic: Epic = (action$) =>
+  action$.pipe(
+    ofType(getAllPasswords.type),
+    switchMap(() =>
+      from(request("password", "GET")).pipe(
+        switchMap((response) =>
+          from(response.json()).pipe(
+            switchMap((result) => {
+              return of(getAllPasswordsSuccess(result));
+            }),
+            catchError((error) => {
+              return of(getAllPasswordsError(error));
+            })
+          )
+        )
       )
     )
   );
@@ -83,5 +105,6 @@ export const userEpics = combineEpics(
   loginEpic,
   logoutEpic,
   registerEpic,
-  createPasswordEpic
+  createPasswordEpic,
+  getPasswordsEpic
 );

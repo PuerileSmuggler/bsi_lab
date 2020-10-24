@@ -11,4 +11,7 @@ export const UserActionTypes = {
   CreatePassword: "USER_CREATE_PASSWORD",
   CreatePasswordSuccess: "USER_CREATE_PASSWORD_SUCCESS",
   CreatePasswordError: "USER_CREATE_PASSWORD_ERROR",
+  GetAllPasswords: "USER_GET_ALL_PASSWORDS",
+  GetAllPasswordsSuccess: "USER_GET_ALL_PASSWORDS_SUCCESS",
+  GetAllPasswordsError: "USER_GET_ALL_PASSWORDS_ERROR",
 };

@@ -31,3 +31,11 @@ export const createPasswordError = createAction<any>(
 export const logoutUser = createAction(UserActionTypes.Logout);
 export const logoutUserSuccess = createAction(UserActionTypes.LogoutSuccess);
 export const logoutUserError = createAction(UserActionTypes.LogoutError);
+
+export const getAllPasswords = createAction(UserActionTypes.GetAllPasswords);
+export const getAllPasswordsSuccess = createAction<
+  Array<CreatePasswordPayload>
+>(UserActionTypes.GetAllPasswordsSuccess);
+export const getAllPasswordsError = createAction<any>(
+  UserActionTypes.GetAllPasswordsError
+);

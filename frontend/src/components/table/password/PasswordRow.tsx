@@ -1,10 +1,11 @@
-import { TableCell, TableRow } from "@material-ui/core";
+import { TableCell, TableRow, Typography } from "@material-ui/core";
 import CheckIcon from "@material-ui/icons/Check";
 import CloseIcon from "@material-ui/icons/Close";
 import EditIcon from "@material-ui/icons/Edit";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 import React, { Component, Fragment } from "react";
+import { CreatePasswordPayload } from "../../../store/user/user.interface";
 import { CustomIconButton } from "../../button/IconButton";
 
 interface IState {
@@ -12,7 +13,9 @@ interface IState {
   edit: boolean;
 }
 
-interface IProps {}
+interface IProps {
+  data: CreatePasswordPayload;
+}
 
 type PropType = IProps;
 
@@ -47,13 +50,22 @@ class PasswordRow extends Component<PropType, IState> {
   }
 
   render() {
+    const { data } = this.props;
     const { edit, visible } = this.state;
     return (
       <TableRow>
-        <TableCell>Test</TableCell>
-        <TableCell>Test2</TableCell>
-        <TableCell>Test3</TableCell>
-        <TableCell>Test4</TableCell>
+        <TableCell>
+          <Typography>{data.webAddress}</Typography>
+        </TableCell>
+        <TableCell>
+          <Typography>{data.description}</Typography>
+        </TableCell>
+        <TableCell>
+          <Typography>{data.login}</Typography>
+        </TableCell>
+        <TableCell>
+          <Typography>{data.password}</Typography>
+        </TableCell>
         <TableCell>
           {!edit ? (
             <Fragment>
