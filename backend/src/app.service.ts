@@ -1,7 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AuthService } from './auth/auth.service';
 import db from './database/initializeDatabase';
-import { RegisterUserDTO } from './dto/User';
+import {
+  CreatePasswordDTO,
+  RegisterUserDTO,
+  UserCredentials,
+} from './dto/User';
 
 @Injectable()
 export class AppService {
@@ -14,6 +18,19 @@ export class AppService {
       salt,
       isPasswordKeptAsHash: user.encryption === 'hmac' ? true : false,
     }).catch((error) => {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+    });
+  }
+
+  async createPassword(user: UserCredentials, password: CreatePasswordDTO) {
+    return await db.Password.create({
+      userId: user.id,
+      webAddress: password.webAddress,
+      description: password.description,
+      login: password.login,
+      password: password.password,
+    }).catch((error) => {
+      console.log(error.message);
       throw new HttpException(error, HttpStatus.BAD_REQUEST);
     });
   }

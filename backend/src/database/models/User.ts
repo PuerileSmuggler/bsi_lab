@@ -42,10 +42,10 @@ export class User extends Model<UserAttributes, UserCreationAttributes>
     passwords: Association<User, Password>;
   };
 
-  public static associate() {
-    User.hasMany(Password, {
+  public static associate(db) {
+    User.hasMany(db.Password, {
       sourceKey: 'id',
-      foreignKey: 'passwordId',
+      foreignKey: 'userId',
       as: 'passwords',
     });
   }
@@ -80,7 +80,7 @@ export default function (sequelize: Sequelize): typeof User {
     },
     {
       sequelize,
-      modelName: 'User',
+      modelName: 'user',
     },
   );
 

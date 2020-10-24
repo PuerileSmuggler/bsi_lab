@@ -1,29 +1,29 @@
-import { Button, Typography } from "@material-ui/core";
+import { Button, IconButton } from "@material-ui/core";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { Dispatch } from "@reduxjs/toolkit";
 import { createForm, FormApi } from "final-form";
 import React, { Component, Fragment } from "react";
 import { Field, Form } from "react-final-form";
 import { connect } from "react-redux";
-import { Link, RouteComponentProps, withRouter } from "react-router-dom";
+import { RouteComponentProps, withRouter } from "react-router-dom";
 import { AppDispatch } from "../../../store";
-import { loginUser, registerUser } from "../../../store/user/user.actions";
-import { LoginUserPayload } from "../../../store/user/user.interface";
+import { createPassword } from "../../../store/user/user.actions";
+import { CreatePasswordPayload } from "../../../store/user/user.interface";
 import CustomField from "../input/CustomField";
-import { ButtonDiv, FormTitle } from "./LoginForm.styled";
+import { ButtonDiv, FormTitle } from "../login/LoginForm.styled";
 
 interface IFormValues {
+  webAddress: string;
+  description: string;
   login: string;
   password: string;
 }
 
 interface IDispatchProps {
-  loginUser: (payload: IFormValues) => AppDispatch;
-  registerUser: (payload: IFormValues) => AppDispatch;
+  createPassword: (payload: IFormValues) => AppDispatch;
 }
 
-interface IProps {
-  register?: boolean;
-}
+interface IProps {}
 
 type PropType = IProps & RouteComponentProps & IDispatchProps;
 
@@ -35,18 +35,17 @@ class LoginForm extends Component<PropType> {
     });
   }
   private onSubmit = (formValues: IFormValues) => {
-    const { register, loginUser, registerUser } = this.props;
-    if (register) {
-      registerUser(formValues);
-    } else {
-      loginUser(formValues);
-    }
+    const { createPassword } = this.props;
+    createPassword(formValues);
+  };
+
+  private handleBackButtonClick = () => {
+    this.props.history.push("/home");
   };
 
   private form: FormApi<IFormValues>;
 
   render() {
-    const { register } = this.props;
     return (
       <Fragment>
         <Form
@@ -55,9 +54,31 @@ class LoginForm extends Component<PropType> {
           subscription={{ pristine: true, submitting: true }}
           render={({ handleSubmit }) => (
             <form onSubmit={handleSubmit}>
+              <IconButton
+                size="small"
+                color="primary"
+                onClick={this.handleBackButtonClick}
+              >
+                <ArrowBackIcon />
+              </IconButton>
               <FormTitle variant="h6" color="textSecondary">
-                {register ? "Register" : "Login"}
+                Add new password
               </FormTitle>
+              <Field name="webAddress">
+                {({ input, meta }) => (
+                  <CustomField inputProps={input} label="Website" meta={meta} />
+                )}
+              </Field>
+              <Field name="description">
+                {({ input, meta }) => (
+                  <CustomField
+                    inputProps={input}
+                    label="Description"
+                    meta={meta}
+                    textFieldProps={{ rows: 4, multiline: true }}
+                  />
+                )}
+              </Field>
               <Field name="login">
                 {({ input, meta }) => (
                   <CustomField inputProps={input} label="Login" meta={meta} />
@@ -73,17 +94,9 @@ class LoginForm extends Component<PropType> {
                   />
                 )}
               </Field>
-              <Link
-                to={register ? "/login" : "/register"}
-                style={{ color: "#5f9ea0" }}
-              >
-                <Typography color="primary">
-                  {register ? "Login" : "Don't have an account? Sign up"}
-                </Typography>
-              </Link>
               <ButtonDiv>
                 <Button type="submit" variant="contained" color="primary">
-                  {register ? "Register" : "Login"}
+                  Create
                 </Button>
               </ButtonDiv>
             </form>
@@ -97,8 +110,8 @@ class LoginForm extends Component<PropType> {
 const mapDispatchToProps = (
   dispatch: Dispatch<AppDispatch>
 ): IDispatchProps => ({
-  loginUser: (payload: LoginUserPayload) => dispatch(loginUser(payload)),
-  registerUser: (payload: LoginUserPayload) => dispatch(registerUser(payload)),
+  createPassword: (payload: CreatePasswordPayload) =>
+    dispatch(createPassword(payload)),
 });
 
 export default connect(null, mapDispatchToProps)(withRouter(LoginForm));

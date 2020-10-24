@@ -23,9 +23,9 @@ const db = {
 const keys = Object.keys(db);
 
 keys.forEach((key) => {
-  if(!/^S|sequelize$/.test(key)) {
-    db[key].associate();
+  if (!/^S|sequelize$/.test(key)) {
+    db[key].associate(db);
   }
-})
+});
 
 export default db;

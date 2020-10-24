@@ -1,7 +1,7 @@
 import {
   OutlinedTextFieldProps,
   TextField,
-  Typography,
+  Typography
 } from "@material-ui/core";
 import React, { Component } from "react";
 import { FieldInputProps } from "react-final-form";

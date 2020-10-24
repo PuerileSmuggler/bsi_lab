@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import db from 'src/database/initializeDatabase';
-
-export type User = any;
+import { UserCredentials } from 'src/dto/User';
 
 @Injectable()
 export class UsersService {
@@ -11,5 +10,15 @@ export class UsersService {
         login,
       },
     });
+  }
+
+  async getPasswords(user: UserCredentials) {
+    return await (
+      await db.User.findOne({
+        where: {
+          id: user.id,
+        },
+      })
+    ).getPasswords();
   }
 }

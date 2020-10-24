@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt/dist/jwt.service';
 import * as crypto from 'crypto';
+import { User } from 'src/database/models/User';
 import { UsersService } from 'src/user/users.service';
 
 @Injectable()
@@ -10,21 +11,20 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(login: string, password: string): Promise<any> {
+  async validateUser(login: string, password: string): Promise<User | null> {
     const user = await this.appService.findOne(login);
     const encryption = user.isPasswordKeptAsHash ? 'sha512' : 'hmac';
     if (
       user &&
       user.password === this.hashPassword(encryption, password, user.salt)
     ) {
-      const { password, ...result } = user;
-      return result;
+      return user;
     }
     return null;
   }
 
-  async login(user: any) {
-    const payload = { username: user.username, sub: user.userId };
+  async login(user: User) {
+    const payload = { login: user.login, id: user.id };
     return {
       access_token: this.jwtService.sign(payload),
     };

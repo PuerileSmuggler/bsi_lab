@@ -1,6 +1,6 @@
 import { createAction } from "@reduxjs/toolkit";
 import { UserActionTypes } from "./user.actions.types";
-import { LoginUserPayload } from "./user.interface";
+import { CreatePasswordPayload, LoginUserPayload } from "./user.interface";
 
 export const loginUser = createAction<LoginUserPayload>(UserActionTypes.Login);
 export const loginUserSuccess = createAction<string>(
@@ -16,6 +16,16 @@ export const registerUserSuccess = createAction<string>(
 );
 export const registerUserError = createAction<any>(
   UserActionTypes.RegisterError
+);
+
+export const createPassword = createAction<CreatePasswordPayload>(
+  UserActionTypes.CreatePassword
+);
+export const createPasswordSuccess = createAction<string>(
+  UserActionTypes.CreatePasswordSuccess
+);
+export const createPasswordError = createAction<any>(
+  UserActionTypes.CreatePasswordError
 );
 
 export const logoutUser = createAction(UserActionTypes.Logout);

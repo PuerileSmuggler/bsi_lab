@@ -4,7 +4,7 @@ export const request = async (url: string, body: any) => {
     body: JSON.stringify(body),
     headers: {
       "Content-Type": "application/json",
-      authorization: localStorage.getItem(tokenStorageKey) || "",
+      Authorization: `Bearer ${localStorage.getItem(tokenStorageKey)}` || "",
     },
   }).then(async (response) => {
     if (response.status === 200 || response.status === 201) {

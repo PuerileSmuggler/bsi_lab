@@ -1,16 +1,16 @@
 import {
-  Model,
-  DataTypes,
-  Optional,
   Association,
   BelongsToGetAssociationMixin,
+  DataTypes,
+  Model,
+  Optional,
 } from 'sequelize';
 import { User } from './User';
 
 interface PasswordAttributes {
   id: number;
   password: string;
-  userId: boolean;
+  userId: number;
   webAddress: string;
   description: string;
   login: string;
@@ -23,7 +23,7 @@ export class Password
   implements PasswordAttributes {
   public id!: number;
   public password!: string;
-  public userId!: boolean;
+  public userId!: number;
   public webAddress!: string;
   public description!: string;
   public login!: string;
@@ -34,8 +34,8 @@ export class Password
     users: Association<Password, User>;
   };
 
-  public static associate() {
-    Password.belongsTo(User, {
+  public static associate(db) {
+    Password.belongsTo(db.User, {
       targetKey: 'id',
     });
   }
@@ -58,7 +58,8 @@ export default function (sequelize): typeof Password {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: 'User',
+          model: 'user',
+          key: 'id',
         },
       },
       webAddress: {
