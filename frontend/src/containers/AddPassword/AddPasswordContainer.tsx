@@ -11,7 +11,6 @@ interface IProps {
 
 export default class AddPasswordContainer extends Component<IProps> {
   render() {
-    const { register } = this.props;
     return (
       <LoginContainerDiv>
         <LoginFormDiv>

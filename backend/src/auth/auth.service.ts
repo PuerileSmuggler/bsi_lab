@@ -27,6 +27,7 @@ export class AuthService {
     const payload = { login: user.login, id: user.id };
     return {
       access_token: this.jwtService.sign(payload),
+      key: user.password.substr(0, 16),
     };
   }
 
@@ -49,10 +50,21 @@ export class AuthService {
 
   encodePassword(password: string, key: string): string {
     const iv = 'V8MMkXs5pkVxzUr7';
-    const cipher = crypto.createCipheriv('aes-256-gcm', key.substr(0, 32), iv);
+    const cipher = crypto.createCipheriv('aes-128-cbc', key.substr(0, 16), iv);
     let buffer = cipher.update(password, 'utf8', 'hex');
     buffer += cipher.final('hex');
-    console.log(buffer);
+    return buffer;
+  }
+
+  decodePassword(password: string, key: string): string {
+    const iv = 'V8MMkXs5pkVxzUr7';
+    const cipher = crypto.createDecipheriv(
+      'aes-256-gcm',
+      key.substr(0, 32),
+      iv,
+    );
+    let buffer = cipher.update(password, 'hex', 'utf8');
+    buffer += cipher.final('utf8');
     return buffer;
   }
 }

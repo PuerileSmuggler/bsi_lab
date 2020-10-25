@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { Fab } from "@material-ui/core";
 
 export const FloatingActionButton = styled(Fab)`
-  position: absolute !important;
-  bottom: 16px;
+  position: fixed !important;
+  bottom: 32px;
   right: 16px;
 `;

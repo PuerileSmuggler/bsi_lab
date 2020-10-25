@@ -1,9 +1,14 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Post, Req, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
 import { AuthService } from './auth/auth.service';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { LocalAuthGuard } from './auth/local-auth.guard';
-import { CreatePasswordDTO, RegisterUserDTO } from './dto/User';
+import {
+  CreatePasswordDTO,
+  EditPasswordDTO,
+  PaginationDTO,
+  RegisterUserDTO,
+} from './dto/User';
 import { UsersService } from './user/users.service';
 
 @Controller('')
@@ -34,8 +39,22 @@ export class AppController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('password')
-  async getPasswords(@Req() req) {
-    return this.usersService.getPasswords(req.user);
+  @Post('password/edit')
+  async editPassword(@Req() req, @Body() body: EditPasswordDTO) {
+    this.appService.editPassword(req.user, body);
+    return {};
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('password')
+  async decodePassword(@Body() body: { id: string }) {
+    this.usersService.deletePassword(body.id);
+    return {};
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('password')
+  async getPasswords(@Req() req, @Body() body: PaginationDTO) {
+    return this.usersService.getPasswords(req.user, body);
   }
 }

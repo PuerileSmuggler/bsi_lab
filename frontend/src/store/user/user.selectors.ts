@@ -1,10 +1,10 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { AppState } from "..";
-import { CreatePasswordPayload } from "./user.interface";
+import { PasswordsPaginatedDTO } from "./user.interface";
 
 const authSelector = (state: AppState): boolean => state.user.auth;
 
-const passwordsSelector = (state: AppState): Array<CreatePasswordPayload> =>
+const passwordsSelector = (state: AppState): PasswordsPaginatedDTO =>
   state.user.passwords;
 
 export const getAuthSelector = createSelector(authSelector, (auth) => auth);

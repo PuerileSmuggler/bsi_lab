@@ -11,7 +11,16 @@ export interface CreatePasswordDTO {
   password: string;
 }
 
+export interface EditPasswordDTO extends CreatePasswordDTO {
+  id: number;
+}
+
 export interface UserCredentials {
   login: string;
   id: number;
+}
+
+export interface PaginationDTO {
+  count: number;
+  page: number;
 }

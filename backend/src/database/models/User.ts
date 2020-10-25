@@ -35,7 +35,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes>
   public getPasswords!: HasManyGetAssociationsMixin<Password>;
   public addPassword!: HasManyAddAssociationMixin<Password, number>;
   public hasPassword!: HasManyHasAssociationMixin<Password, number>;
-  public countPassword!: HasManyCountAssociationsMixin;
+  public countPasswords!: HasManyCountAssociationsMixin;
   public createPassword!: HasManyCreateAssociationMixin<Password>;
 
   public static associations: {

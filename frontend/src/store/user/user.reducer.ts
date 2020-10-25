@@ -4,7 +4,7 @@ import { IUserState } from "./user.interface";
 
 const initState: IUserState = {
   auth: false,
-  passwords: [],
+  passwords: { count: 0, passwords: [] },
 };
 
 export const userReducer = createReducer(initState, (builder) =>

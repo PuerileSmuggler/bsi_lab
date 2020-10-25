@@ -2,8 +2,13 @@ import { combineEpics, Epic, ofType } from "redux-observable";
 import { from, of } from "rxjs";
 import { catchError, switchMap } from "rxjs/operators";
 import { request, tokenStorageKey } from "../../utils/api";
+import { keyStorageKey } from "../../utils/cipher";
 import {
   createPassword,
+  deletePassword,
+  deletePasswordError,
+  deletePasswordSuccess,
+  editPassword,
   getAllPasswords,
   getAllPasswordsError,
   getAllPasswordsSuccess,
@@ -25,9 +30,10 @@ export const loginEpic: Epic = (action$) =>
         switchMap((response) =>
           from(response.json()).pipe(
             switchMap((body) => {
-              const token = body["access_token"];
-              if (token) {
-                localStorage.setItem(tokenStorageKey, token);
+              const { access_token: accessToken, key } = body;
+              if (accessToken && key) {
+                localStorage.setItem(tokenStorageKey, accessToken);
+                localStorage.setItem(keyStorageKey, key);
               }
               return of(loginUserSuccess("Successfully logged in"));
             })
@@ -40,13 +46,13 @@ export const loginEpic: Epic = (action$) =>
     )
   );
 
-export const registerEpic: Epic = (action$, {}, { history }) =>
+export const registerEpic: Epic = (action$, _$state, { browserHistory }) =>
   action$.pipe(
     ofType(registerUser.type),
     switchMap(({ payload }) =>
       from(request("auth/register", "POST", payload)).pipe(
         switchMap(() => {
-          history.push("/login");
+          browserHistory.push("/login");
           return of(registerUserSuccess("Successfully created an account"));
         }),
         catchError((error) => {
@@ -56,12 +62,17 @@ export const registerEpic: Epic = (action$, {}, { history }) =>
     )
   );
 
-export const createPasswordEpic: Epic = (action$) =>
+export const createPasswordEpic: Epic = (
+  action$,
+  _$state,
+  { browserHistory }
+) =>
   action$.pipe(
     ofType(createPassword.type),
     switchMap(({ payload }) =>
       from(request("password/create", "POST", payload)).pipe(
         switchMap(() => {
+          browserHistory.push("/home");
           return of(
             registerUserSuccess("Successfully created a password entry")
           );
@@ -76,8 +87,8 @@ export const createPasswordEpic: Epic = (action$) =>
 export const getPasswordsEpic: Epic = (action$) =>
   action$.pipe(
     ofType(getAllPasswords.type),
-    switchMap(() =>
-      from(request("password", "GET")).pipe(
+    switchMap(({ payload }) =>
+      from(request("password", "POST", payload)).pipe(
         switchMap((response) =>
           from(response.json()).pipe(
             switchMap((result) => {
@@ -90,6 +101,40 @@ export const getPasswordsEpic: Epic = (action$) =>
         )
       )
     )
+  );
+
+export const deletePasswordEpic: Epic = (action$) =>
+  action$.pipe(
+    ofType(deletePassword.type),
+    switchMap(({ payload }) =>
+      from(request("password", "DELETE", payload)).pipe(
+        switchMap(() => {
+          return of(deletePasswordSuccess("Successfully deleted a password"));
+        }),
+        catchError((error) => {
+          return of(deletePasswordError(error));
+        })
+      )
+    )
+  );
+
+export const editPasswordEpic: Epic = (action$) =>
+  action$.pipe(
+    ofType(editPassword.type),
+    switchMap(({ payload }) => {
+      const { rowsPerPage, page, ...rest } = payload;
+      return from(request("password/edit", "POST", rest)).pipe(
+        switchMap(() =>
+          of(
+            getAllPasswords({ count: rowsPerPage, page }),
+            deletePasswordSuccess("Successfully updated a password")
+          )
+        ),
+        catchError((error) => {
+          return of(deletePasswordError(error));
+        })
+      );
+    })
   );
 
 export const logoutEpic: Epic = (action$, _, { browserHistory }) =>
@@ -106,5 +151,7 @@ export const userEpics = combineEpics(
   logoutEpic,
   registerEpic,
   createPasswordEpic,
-  getPasswordsEpic
+  getPasswordsEpic,
+  deletePasswordEpic,
+  editPasswordEpic
 );

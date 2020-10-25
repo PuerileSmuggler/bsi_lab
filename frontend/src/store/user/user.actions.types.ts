@@ -14,4 +14,10 @@ export const UserActionTypes = {
   GetAllPasswords: "USER_GET_ALL_PASSWORDS",
   GetAllPasswordsSuccess: "USER_GET_ALL_PASSWORDS_SUCCESS",
   GetAllPasswordsError: "USER_GET_ALL_PASSWORDS_ERROR",
+  DeletePassword: "USER_DELETE_PASSWORD",
+  DeletePasswordSuccess: "USER_DELETE_PASSWORD_SUCCESS",
+  DeletePasswordError: "USER_DELETE_PASSWORD_ERROR",
+  EditPassword: "USER_EDIT_PASSWORD",
+  EditPasswordSuccess: "USER_EDIT_PASSWORD_SUCCESS",
+  EditPasswordError: "USER_EDIT_PASSWORD_ERROR",
 };

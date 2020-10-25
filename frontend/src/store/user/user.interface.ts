@@ -1,6 +1,6 @@
 export interface IUserState {
   auth: boolean;
-  passwords: Array<CreatePasswordPayload>;
+  passwords: PasswordsPaginatedDTO;
 }
 
 export interface LoginUserPayload {
@@ -12,4 +12,27 @@ export interface CreatePasswordPayload {
   description: string;
   login: string;
   password: string;
+}
+
+export interface PasswordDTO extends CreatePasswordPayload {
+  id: number;
+}
+
+export interface UpdatePasswordDTO extends PasswordDTO {
+  rowsPerPage: number;
+  page: number;
+}
+
+export interface PaginationDTO {
+  count: number;
+  page: number;
+}
+
+export interface PasswordsPaginatedDTO {
+  passwords: Array<PasswordDTO>;
+  count: number;
+}
+
+export interface DeletePasswordDTO {
+  id: number;
 }

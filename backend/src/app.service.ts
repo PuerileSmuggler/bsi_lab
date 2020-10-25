@@ -1,8 +1,15 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { AuthService } from './auth/auth.service';
 import db from './database/initializeDatabase';
 import {
   CreatePasswordDTO,
+  EditPasswordDTO,
   RegisterUserDTO,
   UserCredentials,
 } from './dto/User';
@@ -37,5 +44,40 @@ export class AppService {
     }).catch((error) => {
       throw new HttpException(error, HttpStatus.BAD_REQUEST);
     });
+  }
+
+  async editPassword(user: UserCredentials, newPassword: EditPasswordDTO) {
+    const dbUser = await db.User.findByPk(user.id);
+    if (await dbUser.hasPassword(newPassword.id)) {
+      const { id, password, ...rest } = newPassword;
+      return await db.Password.update(
+        {
+          ...rest,
+          password: this.authService.encodePassword(password, dbUser.password),
+        },
+        {
+          where: {
+            id: newPassword.id,
+          },
+        },
+      ).catch(() => {
+        throw new InternalServerErrorException();
+      });
+    }
+    throw new UnauthorizedException();
+  }
+
+  async decodePassword(
+    user: UserCredentials,
+    password: string,
+  ): Promise<string> {
+    const key = (
+      await db.User.findOne({
+        where: {
+          id: user.id,
+        },
+      })
+    ).password;
+    return this.authService.decodePassword(password, key);
   }
 }
