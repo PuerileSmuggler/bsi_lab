@@ -30,17 +30,13 @@ export class AppService {
   }
 
   async createPassword(user: UserCredentials, password: CreatePasswordDTO) {
-    const key = (
-      await db.User.findOne({
-        where: {
-          id: user.id,
-        },
-      })
-    ).password;
     return await db.Password.create({
       userId: user.id,
       ...password,
-      password: this.authService.encodePassword(password.password, key),
+      password: this.authService.encodePassword(
+        password.password,
+        password.key,
+      ),
     }).catch((error) => {
       throw new HttpException(error, HttpStatus.BAD_REQUEST);
     });
@@ -53,7 +49,7 @@ export class AppService {
       return await db.Password.update(
         {
           ...rest,
-          password: this.authService.encodePassword(password, dbUser.password),
+          password: this.authService.encodePassword(password, newPassword.key),
         },
         {
           where: {
@@ -67,17 +63,67 @@ export class AppService {
     throw new UnauthorizedException();
   }
 
-  async decodePassword(
-    user: UserCredentials,
-    password: string,
-  ): Promise<string> {
-    const key = (
-      await db.User.findOne({
-        where: {
-          id: user.id,
-        },
-      })
-    ).password;
+  async decodePassword({
+    password,
+    key,
+  }: {
+    password: string;
+    key: string;
+  }): Promise<string> {
     return this.authService.decodePassword(password, key);
+  }
+
+  async editUser(
+    user: UserCredentials,
+    password: { oldPassword: string; password: string; key: string },
+  ) {
+    const salt = Math.random().toString(36).substr(2, 5);
+    const dbUser = await db.User.findByPk(user.id);
+    const oldPassword = dbUser.password;
+    if (
+      oldPassword ===
+      this.authService.hashPassword('hmac', password.oldPassword, dbUser.salt)
+    ) {
+      await db.User.update(
+        {
+          password: this.authService.hashPassword(
+            'hmac',
+            password.password,
+            salt,
+          ),
+          salt,
+        },
+        {
+          where: {
+            id: user.id,
+          },
+        },
+      ).catch(() => {
+        throw new InternalServerErrorException();
+      });
+      return await dbUser.getPasswords().then((passwords) => {
+        return passwords.map(async (pass) => {
+          const decodedPassword = this.authService.decodePassword(
+            pass.password,
+            password.oldPassword,
+          );
+          return await db.Password.update(
+            {
+              password: this.authService.encodePassword(
+                decodedPassword,
+                password.password,
+              ),
+            },
+            {
+              where: {
+                id: pass.id,
+              },
+            },
+          );
+        });
+      });
+    } else {
+      throw new UnauthorizedException();
+    }
   }
 }

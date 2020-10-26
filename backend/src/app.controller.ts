@@ -32,6 +32,15 @@ export class AppController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Post('auth/edit')
+  async edit(
+    @Req() req,
+    @Body() body: { oldPassword: string; password: string; key: string },
+  ) {
+    return this.appService.editUser(req.user, body);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Post('password/create')
   async createPassword(@Req() req, @Body() body: CreatePasswordDTO) {
     this.appService.createPassword(req.user, body);

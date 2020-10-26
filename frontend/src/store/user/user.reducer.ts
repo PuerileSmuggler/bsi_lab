@@ -1,5 +1,9 @@
 import { createReducer } from "@reduxjs/toolkit";
-import { getAllPasswordsSuccess, loginUserSuccess } from "./user.actions";
+import {
+  getAllPasswordsSuccess,
+  loginUserSuccess,
+  logoutUser,
+} from "./user.actions";
 import { IUserState } from "./user.interface";
 
 const initState: IUserState = {
@@ -14,5 +18,8 @@ export const userReducer = createReducer(initState, (builder) =>
     })
     .addCase(getAllPasswordsSuccess, (state, action) => {
       state.passwords = action.payload;
+    })
+    .addCase(logoutUser, (state) => {
+      state.auth = false;
     })
 );

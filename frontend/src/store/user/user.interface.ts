@@ -12,6 +12,7 @@ export interface CreatePasswordPayload {
   description: string;
   login: string;
   password: string;
+  key: string;
 }
 
 export interface PasswordDTO extends CreatePasswordPayload {
@@ -35,4 +36,10 @@ export interface PasswordsPaginatedDTO {
 
 export interface DeletePasswordDTO {
   id: number;
+}
+
+export interface EditUserDTO {
+  oldPassword: string;
+  password: string;
+  key: string;
 }

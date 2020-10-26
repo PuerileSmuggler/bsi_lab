@@ -4,16 +4,16 @@ import { of } from "rxjs";
 import { switchMap } from "rxjs/operators";
 import {
   createPasswordSuccess,
-  loginUserSuccess,
+  editPasswordSuccess,
   registerUserSuccess,
 } from "../user/user.actions";
 
 export const notifySuccessEpic: Epic = (action$) =>
   action$.pipe(
     ofType(
-      loginUserSuccess.type,
       registerUserSuccess.type,
-      createPasswordSuccess.type
+      createPasswordSuccess.type,
+      editPasswordSuccess.type
     ),
     switchMap(({ payload }) => {
       toast(payload, { hideProgressBar: true, type: "success" });

@@ -20,4 +20,7 @@ export const UserActionTypes = {
   EditPassword: "USER_EDIT_PASSWORD",
   EditPasswordSuccess: "USER_EDIT_PASSWORD_SUCCESS",
   EditPasswordError: "USER_EDIT_PASSWORD_ERROR",
+  EditUser: "USER_EDIT_USER",
+  EditUserSuccess: "USER_EDIT_USER_SUCCESS",
+  EditUserError: "USER_EDIT_USER_ERROR",
 };

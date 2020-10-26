@@ -27,12 +27,13 @@ import {
   UpdatePasswordDTO,
 } from "../../../store/user/user.interface";
 import { getPasswordsSelector } from "../../../store/user/user.selectors";
+import { keyStorageKey } from "../../../utils/cipher";
 import PasswordRow from "./PasswordRow";
 
 interface IDispatchProps {
   getAllPasswords: (payload: PaginationDTO) => AppDispatch;
   deletePassword: (payload: DeletePasswordDTO) => AppDispatch;
-  updatePassword: (payloade: UpdatePasswordDTO) => AppDispatch;
+  updatePassword: (payload: UpdatePasswordDTO) => AppDispatch;
 }
 
 interface IStateProps {
@@ -88,7 +89,12 @@ class PasswordTable extends Component<PropType, IState> {
 
   handleUpdatePassword = (payload: PasswordDTO) => () => {
     const { page, rowsPerPage } = this.state;
-    this.props.updatePassword({ ...payload, page, rowsPerPage });
+    this.props.updatePassword({
+      ...payload,
+      page,
+      rowsPerPage,
+      key: localStorage.getItem(keyStorageKey) || "",
+    });
   };
 
   render() {

@@ -9,6 +9,11 @@ import {
   deletePasswordError,
   deletePasswordSuccess,
   editPassword,
+  editPasswordError,
+  editPasswordSuccess,
+  editUser,
+  editUserError,
+  editUserSuccess,
   getAllPasswords,
   getAllPasswordsError,
   getAllPasswordsSuccess,
@@ -33,7 +38,7 @@ export const loginEpic: Epic = (action$) =>
               const { access_token: accessToken, key } = body;
               if (accessToken && key) {
                 localStorage.setItem(tokenStorageKey, accessToken);
-                localStorage.setItem(keyStorageKey, key);
+                localStorage.setItem(keyStorageKey, payload.password);
               }
               return of(loginUserSuccess("Successfully logged in"));
             })
@@ -127,11 +132,29 @@ export const editPasswordEpic: Epic = (action$) =>
         switchMap(() =>
           of(
             getAllPasswords({ count: rowsPerPage, page }),
-            deletePasswordSuccess("Successfully updated a password")
+            editPasswordSuccess("Successfully updated a password")
           )
         ),
         catchError((error) => {
-          return of(deletePasswordError(error));
+          return of(editPasswordError(error));
+        })
+      );
+    })
+  );
+
+export const editUserEpic: Epic = (action$) =>
+  action$.pipe(
+    ofType(editUser.type),
+    switchMap(({ payload }) => {
+      return from(request("auth/edit", "POST", payload)).pipe(
+        switchMap(() =>
+          of(
+            logoutUser(),
+            editUserSuccess("Successfully updated master password")
+          )
+        ),
+        catchError((error) => {
+          return of(editUserError(error));
         })
       );
     })
@@ -141,6 +164,8 @@ export const logoutEpic: Epic = (action$, _, { browserHistory }) =>
   action$.pipe(
     ofType(logoutUser.type),
     switchMap(() => {
+      localStorage.removeItem(keyStorageKey);
+      localStorage.removeItem(tokenStorageKey);
       browserHistory.push("/login");
       return of(logoutUserSuccess());
     })
@@ -153,5 +178,6 @@ export const userEpics = combineEpics(
   createPasswordEpic,
   getPasswordsEpic,
   deletePasswordEpic,
-  editPasswordEpic
+  editPasswordEpic,
+  editUserEpic
 );

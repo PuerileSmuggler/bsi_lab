@@ -1,5 +1,4 @@
-import { Button, IconButton } from "@material-ui/core";
-import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import { Button } from "@material-ui/core";
 import { Dispatch } from "@reduxjs/toolkit";
 import { createForm, FormApi } from "final-form";
 import React, { Component, Fragment } from "react";
@@ -7,21 +6,20 @@ import { Field, Form } from "react-final-form";
 import { connect } from "react-redux";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import { AppDispatch } from "../../../store";
-import { createPassword } from "../../../store/user/user.actions";
-import { CreatePasswordPayload } from "../../../store/user/user.interface";
+import { editUser } from "../../../store/user/user.actions";
+import { EditUserDTO } from "../../../store/user/user.interface";
 import { keyStorageKey } from "../../../utils/cipher";
 import CustomField from "../input/CustomField";
 import { ButtonDiv, FormTitle } from "../login/LoginForm.styled";
 
 interface IFormValues {
-  webAddress: string;
-  description: string;
-  login: string;
+  oldPassword: string;
   password: string;
+  repeatPassword: string;
 }
 
 interface IDispatchProps {
-  createPassword: (payload: CreatePasswordPayload) => AppDispatch;
+  editUser: (payload: EditUserDTO) => AppDispatch;
 }
 
 interface IProps {}
@@ -36,15 +34,12 @@ class LoginForm extends Component<PropType> {
     });
   }
   private onSubmit = (formValues: IFormValues) => {
-    const { createPassword } = this.props;
-    createPassword({
-      ...formValues,
+    const { editUser } = this.props;
+    editUser({
+      oldPassword: formValues.oldPassword,
+      password: formValues.password,
       key: localStorage.getItem(keyStorageKey) || "",
     });
-  };
-
-  private handleBackButtonClick = () => {
-    this.props.history.push("/home");
   };
 
   private form: FormApi<IFormValues>;
@@ -56,43 +51,41 @@ class LoginForm extends Component<PropType> {
           onSubmit={this.onSubmit}
           form={this.form}
           subscription={{ pristine: true, submitting: true }}
-          render={({ handleSubmit }) => (
+          render={({ handleSubmit, form }) => (
             <form onSubmit={handleSubmit}>
-              <IconButton
-                size="small"
-                color="primary"
-                onClick={this.handleBackButtonClick}
-              >
-                <ArrowBackIcon />
-              </IconButton>
               <FormTitle variant="h6" color="textSecondary">
-                Add new password
+                Change password
               </FormTitle>
-              <Field name="webAddress">
-                {({ input, meta }) => (
-                  <CustomField inputProps={input} label="Website" meta={meta} />
-                )}
-              </Field>
-              <Field name="description">
+              <Field name="oldPassword">
                 {({ input, meta }) => (
                   <CustomField
                     inputProps={input}
-                    label="Description"
+                    label="Old password"
                     meta={meta}
-                    textFieldProps={{ rows: 4, multiline: true }}
                   />
-                )}
-              </Field>
-              <Field name="login">
-                {({ input, meta }) => (
-                  <CustomField inputProps={input} label="Login" meta={meta} />
                 )}
               </Field>
               <Field name="password">
                 {({ input, meta }) => (
                   <CustomField
                     inputProps={input}
-                    label="Password"
+                    label="New password"
+                    meta={meta}
+                  />
+                )}
+              </Field>
+              <Field
+                name="repeatPassword"
+                validate={(value) =>
+                  value === form.getState().values.password
+                    ? null
+                    : "Passwords must match"
+                }
+              >
+                {({ input, meta }) => (
+                  <CustomField
+                    inputProps={input}
+                    label="Repeat new password"
                     meta={meta}
                     textFieldProps={{ type: "password" }}
                   />
@@ -100,7 +93,7 @@ class LoginForm extends Component<PropType> {
               </Field>
               <ButtonDiv>
                 <Button type="submit" variant="contained" color="primary">
-                  Create
+                  Change password
                 </Button>
               </ButtonDiv>
             </form>
@@ -114,8 +107,7 @@ class LoginForm extends Component<PropType> {
 const mapDispatchToProps = (
   dispatch: Dispatch<AppDispatch>
 ): IDispatchProps => ({
-  createPassword: (payload: CreatePasswordPayload) =>
-    dispatch(createPassword(payload)),
+  editUser: (payload: EditUserDTO) => dispatch(editUser(payload)),
 });
 
 export default connect(null, mapDispatchToProps)(withRouter(LoginForm));

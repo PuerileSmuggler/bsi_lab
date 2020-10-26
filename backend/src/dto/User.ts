@@ -9,6 +9,7 @@ export interface CreatePasswordDTO {
   description: string;
   login: string;
   password: string;
+  key: string;
 }
 
 export interface EditPasswordDTO extends CreatePasswordDTO {

@@ -3,6 +3,7 @@ import { UserActionTypes } from "./user.actions.types";
 import {
   CreatePasswordPayload,
   DeletePasswordDTO,
+  EditUserDTO,
   LoginUserPayload,
   PaginationDTO,
   PasswordsPaginatedDTO,
@@ -58,6 +59,12 @@ export const editPasswordSuccess = createAction<string>(
 export const editPasswordError = createAction<any>(
   UserActionTypes.EditPasswordError
 );
+
+export const editUser = createAction<EditUserDTO>(UserActionTypes.EditUser);
+export const editUserSuccess = createAction<string>(
+  UserActionTypes.EditUserSuccess
+);
+export const editUserError = createAction<any>(UserActionTypes.EditUserError);
 
 export const getAllPasswords = createAction<PaginationDTO>(
   UserActionTypes.GetAllPasswords
