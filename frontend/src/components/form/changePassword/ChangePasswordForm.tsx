@@ -10,12 +10,14 @@ import { editUser } from "../../../store/user/user.actions";
 import { EditUserDTO } from "../../../store/user/user.interface";
 import { keyStorageKey } from "../../../utils/cipher";
 import CustomField from "../input/CustomField";
+import CustomSelect from "../input/CustomSelect";
 import { ButtonDiv, FormTitle } from "../login/LoginForm.styled";
 
 interface IFormValues {
   oldPassword: string;
   password: string;
   repeatPassword: string;
+  encryption: string;
 }
 
 interface IDispatchProps {
@@ -39,6 +41,7 @@ class LoginForm extends Component<PropType> {
       oldPassword: formValues.oldPassword,
       password: formValues.password,
       key: localStorage.getItem(keyStorageKey) || "",
+      encryption: formValues.encryption as "hmac" | "sha512",
     });
   };
 
@@ -62,6 +65,7 @@ class LoginForm extends Component<PropType> {
                     inputProps={input}
                     label="Old password"
                     meta={meta}
+                    textFieldProps={{ type: "password" }}
                   />
                 )}
               </Field>
@@ -71,6 +75,7 @@ class LoginForm extends Component<PropType> {
                     inputProps={input}
                     label="New password"
                     meta={meta}
+                    textFieldProps={{ type: "password" }}
                   />
                 )}
               </Field>
@@ -88,6 +93,20 @@ class LoginForm extends Component<PropType> {
                     label="Repeat new password"
                     meta={meta}
                     textFieldProps={{ type: "password" }}
+                  />
+                )}
+              </Field>
+              <Field name="encryption" initialValue="hmac">
+                {({ input, meta }) => (
+                  <CustomSelect
+                    inputProps={input}
+                    label="Encryption"
+                    touched={meta.touched}
+                    error={meta.error}
+                    rows={[
+                      { name: "HMAC", value: "hmac" },
+                      { name: "SHA-512", value: "sha512" },
+                    ]}
                   />
                 )}
               </Field>

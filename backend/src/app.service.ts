@@ -21,7 +21,11 @@ export class AppService {
     const salt = Math.random().toString(36).substr(2, 5);
     return await db.User.create({
       login: user.login,
-      password: this.authService.hashPassword('hmac', user.password, salt),
+      password: this.authService.hashPassword(
+        user.encryption,
+        user.password,
+        salt,
+      ),
       salt,
       isPasswordKeptAsHash: user.encryption === 'hmac' ? true : false,
     }).catch((error) => {
@@ -75,19 +79,29 @@ export class AppService {
 
   async editUser(
     user: UserCredentials,
-    password: { oldPassword: string; password: string; key: string },
+    password: {
+      oldPassword: string;
+      password: string;
+      key: string;
+      encryption: 'hmac' | 'sha512';
+    },
   ) {
     const salt = Math.random().toString(36).substr(2, 5);
     const dbUser = await db.User.findByPk(user.id);
     const oldPassword = dbUser.password;
+    const encryption = dbUser.isPasswordKeptAsHash ? 'hmac' : 'sha512';
     if (
       oldPassword ===
-      this.authService.hashPassword('hmac', password.oldPassword, dbUser.salt)
+      this.authService.hashPassword(
+        encryption,
+        password.oldPassword,
+        dbUser.salt,
+      )
     ) {
       await db.User.update(
         {
           password: this.authService.hashPassword(
-            'hmac',
+            password.encryption,
             password.password,
             salt,
           ),

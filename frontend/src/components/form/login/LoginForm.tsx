@@ -9,11 +9,13 @@ import { AppDispatch } from "../../../store";
 import { loginUser, registerUser } from "../../../store/user/user.actions";
 import { LoginUserPayload } from "../../../store/user/user.interface";
 import CustomField from "../input/CustomField";
+import CustomSelect from "../input/CustomSelect";
 import { ButtonDiv, FormTitle } from "./LoginForm.styled";
 
 interface IFormValues {
   login: string;
   password: string;
+  encryption: string;
 }
 
 interface IDispatchProps {
@@ -53,7 +55,7 @@ class LoginForm extends Component<PropType> {
           onSubmit={this.onSubmit}
           form={this.form}
           subscription={{ pristine: true, submitting: true }}
-          render={({ handleSubmit }) => (
+          render={({ handleSubmit, form }) => (
             <form onSubmit={handleSubmit}>
               <FormTitle variant="h6" color="textSecondary">
                 {register ? "Register" : "Login"}
@@ -73,6 +75,41 @@ class LoginForm extends Component<PropType> {
                   />
                 )}
               </Field>
+              {register && (
+                <Field
+                  name="repeatPassword"
+                  validate={(value) =>
+                    value === form.getState().values.password
+                      ? null
+                      : "Passwords must match"
+                  }
+                >
+                  {({ input, meta }) => (
+                    <CustomField
+                      inputProps={input}
+                      label="Repeat password"
+                      meta={meta}
+                      textFieldProps={{ type: "password" }}
+                    />
+                  )}
+                </Field>
+              )}
+              {register && (
+                <Field name="encryption" initialValue="hmac">
+                  {({ input, meta }) => (
+                    <CustomSelect
+                      inputProps={input}
+                      label="Encryption"
+                      touched={meta.touched}
+                      error={meta.error}
+                      rows={[
+                        { name: "HMAC", value: "hmac" },
+                        { name: "SHA-512", value: "sha512" },
+                      ]}
+                    />
+                  )}
+                </Field>
+              )}
               <Link
                 to={register ? "/login" : "/register"}
                 style={{ color: "#5f9ea0" }}

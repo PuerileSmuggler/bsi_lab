@@ -13,7 +13,7 @@ export class AuthService {
 
   async validateUser(login: string, password: string): Promise<User | null> {
     const user = await this.appService.findOne(login);
-    const encryption = user.isPasswordKeptAsHash ? 'sha512' : 'hmac';
+    const encryption = user.isPasswordKeptAsHash ? 'hmac' : 'sha512';
     if (
       user &&
       user.password === this.hashPassword(encryption, password, user.salt)

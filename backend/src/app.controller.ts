@@ -35,7 +35,13 @@ export class AppController {
   @Post('auth/edit')
   async edit(
     @Req() req,
-    @Body() body: { oldPassword: string; password: string; key: string },
+    @Body()
+    body: {
+      oldPassword: string;
+      password: string;
+      key: string;
+      encryption: 'hmac' | 'sha512';
+    },
   ) {
     return this.appService.editUser(req.user, body);
   }

@@ -42,4 +42,5 @@ export interface EditUserDTO {
   oldPassword: string;
   password: string;
   key: string;
+  encryption: "sha512" | "hmac";
 }
