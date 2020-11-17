@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth/auth.service';
 import db from './database/initializeDatabase';
+import { Password } from './database/models/Password';
 import {
   CreatePasswordDTO,
   EditPasswordDTO,
@@ -46,7 +47,10 @@ export class AppService {
     });
   }
 
-  async editPassword(user: UserCredentials, newPassword: EditPasswordDTO) {
+  async editPassword(
+    user: UserCredentials,
+    newPassword: Partial<EditPasswordDTO>,
+  ): Promise<[number, Array<Password>]> {
     const dbUser = await db.User.findByPk(user.id);
     if (await dbUser.hasPassword(newPassword.id)) {
       const { id, password, ...rest } = newPassword;
@@ -106,6 +110,7 @@ export class AppService {
             salt,
           ),
           salt,
+          isPasswordKeptAsHash: password.encryption === 'hmac' ? true : false,
         },
         {
           where: {
@@ -115,26 +120,28 @@ export class AppService {
       ).catch(() => {
         throw new InternalServerErrorException();
       });
-      return await dbUser.getPasswords().then((passwords) => {
-        return passwords.map(async (pass) => {
-          const decodedPassword = this.authService.decodePassword(
-            pass.password,
-            password.oldPassword,
-          );
-          return await db.Password.update(
-            {
-              password: this.authService.encodePassword(
-                decodedPassword,
-                password.password,
-              ),
-            },
-            {
-              where: {
-                id: pass.id,
+      return await dbUser.getPasswords().then(async (passwords) => {
+        return await Promise.all(
+          passwords.map(async (pass) => {
+            const decodedPassword = this.authService.decodePassword(
+              pass.password,
+              password.oldPassword,
+            );
+            return await db.Password.update(
+              {
+                password: this.authService.encodePassword(
+                  decodedPassword,
+                  password.password,
+                ),
               },
-            },
-          );
-        });
+              {
+                where: {
+                  id: pass.id,
+                },
+              },
+            );
+          }),
+        );
       });
     } else {
       throw new UnauthorizedException();

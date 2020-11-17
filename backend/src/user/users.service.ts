@@ -1,6 +1,6 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import db from 'src/database/initializeDatabase';
 import { PaginationDTO, UserCredentials } from 'src/dto/User';
+import db from '../database/initializeDatabase';
 
 @Injectable()
 export class UsersService {
@@ -27,7 +27,7 @@ export class UsersService {
     return { passwords, count: dbCount };
   }
 
-  async deletePassword(id: string) {
+  async deletePassword(id: number) {
     await (await db.Password.findByPk(id)).destroy().catch(() => {
       throw new InternalServerErrorException();
     });

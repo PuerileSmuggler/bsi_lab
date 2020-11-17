@@ -21,8 +21,7 @@ export class AppController {
 
   @Post('auth/register')
   async registerUser(@Body() user: RegisterUserDTO) {
-    await this.appService.createUser(user);
-    return {};
+    return await this.appService.createUser(user);
   }
 
   @UseGuards(LocalAuthGuard)
@@ -43,27 +42,25 @@ export class AppController {
       encryption: 'hmac' | 'sha512';
     },
   ) {
-    return this.appService.editUser(req.user, body);
+    return await this.appService.editUser(req.user, body);
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('password/create')
   async createPassword(@Req() req, @Body() body: CreatePasswordDTO) {
-    this.appService.createPassword(req.user, body);
-    return {};
+    return await this.appService.createPassword(req.user, body);
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('password/edit')
-  async editPassword(@Req() req, @Body() body: EditPasswordDTO) {
-    this.appService.editPassword(req.user, body);
-    return {};
+  async editPassword(@Req() req, @Body() body: Partial<EditPasswordDTO>) {
+    return await this.appService.editPassword(req.user, body);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete('password')
-  async decodePassword(@Body() body: { id: string }) {
-    this.usersService.deletePassword(body.id);
+  async deletePassword(@Body() body: { id: number }) {
+    await this.usersService.deletePassword(Number(body.id));
     return {};
   }
 

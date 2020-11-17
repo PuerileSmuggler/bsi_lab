@@ -14,6 +14,8 @@ interface PasswordAttributes {
   webAddress: string;
   description: string;
   login: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 type PasswordCreationAttributes = Optional<PasswordAttributes, 'id'>;

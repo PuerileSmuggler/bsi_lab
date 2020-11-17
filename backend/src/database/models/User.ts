@@ -18,6 +18,8 @@ interface UserAttributes {
   password: string;
   salt: string;
   isPasswordKeptAsHash: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 type UserCreationAttributes = Optional<UserAttributes, 'id'>;
