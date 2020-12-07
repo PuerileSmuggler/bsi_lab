@@ -1,14 +1,15 @@
 import {
   OutlinedTextFieldProps,
   TextField,
-  Typography
+  Typography,
 } from "@material-ui/core";
+import CheckIcon from "@material-ui/icons/Check";
 import React, { Component } from "react";
 import { FieldInputProps } from "react-final-form";
 import { InputDiv } from "./Input.styled";
 
 interface IProps {
-  label: string;
+  label?: string;
   meta: {
     error?: string | boolean;
     touched?: boolean;
@@ -30,22 +31,26 @@ class CustomField extends Component<PropType> {
 
     return (
       <InputDiv>
-        <Typography variant="body2" color="textSecondary">
-          {label}
-        </Typography>
+        {label && (
+          <Typography variant="body2" color="textSecondary">
+            {label}
+          </Typography>
+        )}
         <TextField
           {...props.textFieldProps}
           error={shouldDisplayError}
           variant="outlined"
-          inputProps={
-            props.testId ? { ...inputProps, "data-testid": testId } : inputProps
+          inputProps={{ ...inputProps, "data-testid": testId }}
+          InputProps={
+            meta.touched && !meta.error
+              ? { endAdornment: <CheckIcon color="primary" /> }
+              : {}
           }
           autoComplete={
             props.disableAutocomplete
               ? "new-password"
               : props.textFieldProps?.type
           }
-          margin="dense"
         />
         {shouldDisplayError && typeof meta.error !== "boolean" && (
           <Typography

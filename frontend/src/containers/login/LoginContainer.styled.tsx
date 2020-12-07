@@ -9,7 +9,8 @@ export const LoginContainerDiv = styled.div`
 
 export const LoginFormDiv = styled.div`
   width: 400px;
-  background-color: #2e2e31;
+  background-color: #000;
   padding: 24px;
-  border-radius: 12px;
+  border-radius: 4px;
+  border: 1px solid #444
 `;

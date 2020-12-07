@@ -3,12 +3,13 @@ import { Dispatch } from "@reduxjs/toolkit";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link, Redirect, Route, Switch } from "react-router-dom";
-import { AppDiv, AppTitle } from "./App.styled";
+import { AppDiv } from "./App.styled";
 import PrivateRoute from "./components/router/PrivateRoute";
 import PublicRoute from "./components/router/PublicRoute";
+import Logo from "./components/text/Logo";
 import AddPasswordContainer from "./containers/AddPassword/AddPasswordContainer";
 import ChangePasswordContainer from "./containers/ChangePassword/ChangePasswordContainer";
-import Logincontainer from "./containers/login/LoginContainer";
+import Logincontainer from "./containers/Login/LoginContainer";
 import Walletcontainer from "./containers/Wallet/WalletContainer";
 import { AppDispatch, AppState } from "./store";
 import { logoutUser } from "./store/user/user.actions";
@@ -35,7 +36,7 @@ class App extends Component<IStateProps & IDispatchProps> {
             justifyContent: "space-between",
           }}
         >
-          <AppTitle variant="h4">Pamsword Wallet</AppTitle>
+          <Logo />
           {this.props.auth && (
             <div
               style={{

@@ -1,11 +1,10 @@
 import { css } from "@emotion/core";
 import styled from "@emotion/styled";
-import { Select } from "@material-ui/core";
 
 export const InputDiv = styled.div`
   display: flex;
   flex-direction: column;
-  margin: 4px auto;
+  margin: 12px auto;
   width: 100%;
 `;
 
@@ -56,8 +55,4 @@ export const SelectDiv = styled.div`
   width: 100%;
   align-items: center;
   justify-content: space-between;
-`;
-
-export const StyledSelect = styled(Select)`
-  width: 150px !important;
 `;

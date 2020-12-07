@@ -6,7 +6,7 @@ import { Field, Form } from "react-final-form";
 import { connect } from "react-redux";
 import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 import { AppDispatch } from "../../../store";
-import { loginUser } from "../../../store/user/user.actions";
+import { registerUser } from "../../../store/user/user.actions";
 import { LoginUserPayload } from "../../../store/user/user.interface";
 import {
   composeValidators,
@@ -14,9 +14,11 @@ import {
   length,
   required,
 } from "../../../utils/validators";
+import Subtitle from "../../text/Subtitle";
 import Title from "../../text/Title";
 import CustomField from "../input/CustomField";
-import { ButtonDiv } from "./LoginForm.styled";
+import CustomSelect from "../input/CustomSelect";
+import { ButtonDiv } from "./RegisterForm.styled";
 
 interface IFormValues {
   login: string;
@@ -25,12 +27,12 @@ interface IFormValues {
 }
 
 interface IDispatchProps {
-  loginUser: (payload: IFormValues) => AppDispatch;
+  registerUser: (payload: IFormValues) => AppDispatch;
 }
 
 type PropType = RouteComponentProps & IDispatchProps;
 
-class LoginForm extends Component<PropType> {
+class RegisterForm extends Component<PropType> {
   constructor(props: PropType) {
     super(props);
     this.form = createForm({
@@ -38,8 +40,8 @@ class LoginForm extends Component<PropType> {
     });
   }
   private onSubmit = (formValues: IFormValues) => {
-    const { loginUser } = this.props;
-    loginUser(formValues);
+    const { registerUser } = this.props;
+    registerUser(formValues);
   };
 
   private form: FormApi<IFormValues>;
@@ -53,7 +55,8 @@ class LoginForm extends Component<PropType> {
           subscription={{ pristine: true, submitting: true, errors: true }}
           render={({ handleSubmit, form }) => (
             <form onSubmit={handleSubmit}>
-              <Title>Login</Title>
+              <Title>Sign up for free</Title>
+              <Subtitle>and enhance your experience</Subtitle>
               <Field
                 name="login"
                 validate={composeValidators([required, email])}
@@ -62,9 +65,7 @@ class LoginForm extends Component<PropType> {
                   <CustomField
                     inputProps={input}
                     meta={meta}
-                    textFieldProps={{
-                      placeholder: "Email",
-                    }}
+                    textFieldProps={{ placeholder: "Email" }}
                   />
                 )}
               </Field>
@@ -78,8 +79,40 @@ class LoginForm extends Component<PropType> {
                     meta={meta}
                     textFieldProps={{
                       type: "password",
-                      placeholder: "Password",
+                      placeholder: "Password (6+ characters)",
                     }}
+                  />
+                )}
+              </Field>
+              <Field
+                name="repeatPassword"
+                validate={(value) =>
+                  value === form.getState().values.password
+                    ? null
+                    : "Passwords must match"
+                }
+              >
+                {({ input, meta }) => (
+                  <CustomField
+                    inputProps={input}
+                    meta={meta}
+                    textFieldProps={{
+                      type: "password",
+                      placeholder: "Repeat password",
+                    }}
+                  />
+                )}
+              </Field>
+              <Field name="encryption" initialValue="hmac">
+                {({ input, meta }) => (
+                  <CustomSelect
+                    inputProps={input}
+                    touched={meta.touched}
+                    error={meta.error}
+                    rows={[
+                      { name: "HMAC", value: "hmac" },
+                      { name: "SHA-512", value: "sha512" },
+                    ]}
                   />
                 )}
               </Field>
@@ -89,23 +122,27 @@ class LoginForm extends Component<PropType> {
                   type="submit"
                   variant="contained"
                   color="primary"
-                  disabled={!form.getState().valid}
-                  fullWidth
+                  disabled={!this.form.getState().valid}
                 >
                   <Box
                     fontWeight="fontWeightBold"
                     fontSize="22px"
                     color={this.form.getState().valid ? "#000" : "#ccc"}
+                    padding="6px"
                   >
-                    Login
+                    Sign Up!
                   </Box>
                 </Button>
-                <Link
-                  to="/register"
-                  style={{ textDecoration: "none", marginTop: "24px" }}
-                >
-                  <Typography color="primary">
-                    Don't have an account? Sign up
+                <Typography component="div">
+                  <Box color="white" fontSize="18px">
+                    Or
+                  </Box>
+                </Typography>
+                <Link to="/login" style={{ textDecoration: "none" }}>
+                  <Typography color="primary" component="div">
+                    <Box fontSize="18px" fontWeight="fontWeightBold">
+                      Log in
+                    </Box>
                   </Typography>
                 </Link>
               </ButtonDiv>
@@ -120,7 +157,7 @@ class LoginForm extends Component<PropType> {
 const mapDispatchToProps = (
   dispatch: Dispatch<AppDispatch>,
 ): IDispatchProps => ({
-  loginUser: (payload: LoginUserPayload) => dispatch(loginUser(payload)),
+  registerUser: (payload: LoginUserPayload) => dispatch(registerUser(payload)),
 });
 
-export default connect(null, mapDispatchToProps)(withRouter(LoginForm));
+export default connect(null, mapDispatchToProps)(withRouter(RegisterForm));

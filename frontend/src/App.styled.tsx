@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { Typography } from "@material-ui/core";
 
 export const AppDiv = styled.div`
-  background-color: aliceblue;
+  background-color: #000;
   height: 100%;
 `;
 

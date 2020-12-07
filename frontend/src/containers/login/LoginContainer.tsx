@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import LoginForm from "../../components/form/login/LoginForm";
+import RegisterForm from "../../components/form/register/RegisterForm";
 import { LoginContainerDiv, LoginFormDiv } from "./LoginContainer.styled";
 
 interface IProps {
@@ -12,7 +13,7 @@ export default class Logincontainer extends Component<IProps> {
     return (
       <LoginContainerDiv>
         <LoginFormDiv>
-          <LoginForm register={register} />
+          {register ? <RegisterForm /> : <LoginForm />}
         </LoginFormDiv>
       </LoginContainerDiv>
     );

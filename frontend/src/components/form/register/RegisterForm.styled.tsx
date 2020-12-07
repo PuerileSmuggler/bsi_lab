@@ -2,12 +2,13 @@ import styled from "@emotion/styled";
 import { Typography } from "@material-ui/core";
 
 export const ButtonDiv = styled.div`
-  width: 100%;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
+  justify-content: flex-start;
   margin-top: 28px;
+  align-items: center;
+  & > :first-of-type {
+    margin-right: 18px;
+  }
 `;
 
 export const FormTitle = styled(Typography)`
