@@ -6,21 +6,22 @@ interface IProps {
   children: ReactElement;
   onClick?: () => void;
   iconButtonProps?: IconButtonProps;
+  color?: "primary" | "secondary";
 }
 
 export const CustomIconButton = (props: IProps) => {
-  const { tooltip, children, onClick, iconButtonProps } = props;
+  const { tooltip, children, onClick, iconButtonProps, color } = props;
   return (
     <Fragment>
       {tooltip && (
         <Tooltip title={tooltip}>
-          <IconButton onClick={onClick} {...iconButtonProps}>
+          <IconButton onClick={onClick} {...iconButtonProps} color={color}>
             {children}
           </IconButton>
         </Tooltip>
       )}
       {!tooltip && (
-        <IconButton onClick={onClick} {...iconButtonProps}>
+        <IconButton onClick={onClick} {...iconButtonProps} color={color}>
           {children}
         </IconButton>
       )}

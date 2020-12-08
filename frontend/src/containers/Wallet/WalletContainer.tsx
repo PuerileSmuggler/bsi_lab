@@ -4,11 +4,7 @@ import PasswordTable from "../../components/table/password/PasswordTable";
 
 class Walletcontainer extends Component<RouteComponentProps> {
   render() {
-    return (
-      <div>
-        <PasswordTable />
-      </div>
-    );
+    return <PasswordTable />;
   }
 }
 

@@ -1,7 +1,6 @@
 import styled from "@emotion/styled";
 
 export const TitleContainer = styled.div`
-  font-size: 34px;
   color: #fff;
   font-weight: 700;
   text-align: center;

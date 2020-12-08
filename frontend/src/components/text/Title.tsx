@@ -1,14 +1,20 @@
-import React, { PureComponent } from 'react'
-import { TitleContainer } from './Title.styled'
+import { Box } from "@material-ui/core";
+import React, { PureComponent } from "react";
+import { TitleContainer } from "./Title.styled";
 
-export class Title extends PureComponent {
-    render() {
-        return (
-            <TitleContainer>
-                {this.props.children}
-            </TitleContainer>
-        )
-    }
+interface IProps {
+  fontSize?: string;
 }
 
-export default Title
+export class Title extends PureComponent<IProps> {
+  render() {
+    const { fontSize } = this.props;
+    return (
+      <TitleContainer>
+        <Box fontSize={fontSize || "34px"}>{this.props.children}</Box>
+      </TitleContainer>
+    );
+  }
+}
+
+export default Title;

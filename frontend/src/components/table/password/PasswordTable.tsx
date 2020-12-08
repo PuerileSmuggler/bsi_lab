@@ -9,7 +9,7 @@ import {
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import { Dispatch } from "@reduxjs/toolkit";
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import { connect } from "react-redux";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import { FloatingActionButton } from "../../../containers/Wallet/WalletContainer.styled";
@@ -28,6 +28,12 @@ import {
 } from "../../../store/user/user.interface";
 import { getPasswordsSelector } from "../../../store/user/user.selectors";
 import { keyStorageKey } from "../../../utils/cipher";
+import Title from "../../text/Title";
+import {
+  PasswordContainer,
+  PasswordCustomTable,
+  PasswordTableContainer,
+} from "./Password.styled";
 import PasswordRow from "./PasswordRow";
 
 interface IDispatchProps {
@@ -66,7 +72,7 @@ class PasswordTable extends Component<PropType, IState> {
 
   handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent> | null,
-    page: number
+    page: number,
   ) => {
     const { rowsPerPage } = this.state;
     this.setState({ page });
@@ -74,7 +80,7 @@ class PasswordTable extends Component<PropType, IState> {
   };
 
   handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { page } = this.state;
     this.setState({ rowsPerPage: Number(event.target.value) });
@@ -101,62 +107,56 @@ class PasswordTable extends Component<PropType, IState> {
     const { passwords } = this.props;
     const { page, rowsPerPage } = this.state;
     return (
-      <Fragment>
+      <PasswordContainer>
         <FloatingActionButton
           color="secondary"
           onClick={this.handleAddPasswordClick}
         >
           <AddIcon />
         </FloatingActionButton>
-        <Table style={{ backgroundColor: "aliceblue" }}>
-          <TableHead>
-            <TableRow>
-              <TablePagination
-                component="td"
-                count={passwords.count}
-                onChangePage={this.handleChangePage}
-                page={page}
-                rowsPerPage={rowsPerPage}
-              />
-            </TableRow>
-            <TableRow>
-              <TableCell>
-                <TableSortLabel>Website</TableSortLabel>
-              </TableCell>
-              <TableCell>
-                <TableSortLabel>Description</TableSortLabel>
-              </TableCell>
-              <TableCell>
-                <TableSortLabel>Login</TableSortLabel>
-              </TableCell>
-              <TableCell>
-                <TableSortLabel>Password</TableSortLabel>
-              </TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {passwords.passwords.map((data, index) => (
-              <PasswordRow
-                data={data}
-                key={index}
-                deletePassword={this.handleDeleteRow}
-                updatePassword={this.handleUpdatePassword}
-              />
-            ))}
-            <TableRow>
-              <TablePagination
-                component="td"
-                count={passwords.count}
-                onChangePage={this.handleChangePage}
-                page={page}
-                rowsPerPage={rowsPerPage}
-                onChangeRowsPerPage={this.handleChangeRowsPerPage}
-              />
-            </TableRow>
-          </TableBody>
-        </Table>
-      </Fragment>
+        <PasswordTableContainer>
+          <Title>Saved passwords</Title>
+          <PasswordCustomTable>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell></TableCell>
+                  <TableCell>
+                    <TableSortLabel>
+                      <Title fontSize="14px">Website</Title>
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel>
+                      <Title fontSize="14px">Login</Title>
+                    </TableSortLabel>
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {passwords.passwords.map((data, index) => (
+                  <PasswordRow
+                    data={data}
+                    key={index}
+                    deletePassword={this.handleDeleteRow}
+                    updatePassword={this.handleUpdatePassword}
+                  />
+                ))}
+              </TableBody>
+            </Table>
+          </PasswordCustomTable>
+          <TablePagination
+            component="td"
+            count={passwords.count}
+            onChangePage={this.handleChangePage}
+            page={page}
+            rowsPerPage={rowsPerPage}
+            nextIconButtonProps={{ color: "primary" }}
+            backIconButtonProps={{ color: "primary" }}
+            onChangeRowsPerPage={this.handleChangeRowsPerPage}
+          />
+        </PasswordTableContainer>
+      </PasswordContainer>
     );
   }
 }
@@ -176,5 +176,5 @@ const mapStateToProps = (state: AppState): IStateProps => ({
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(withRouter(PasswordTable));
