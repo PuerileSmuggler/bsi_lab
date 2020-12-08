@@ -5,13 +5,14 @@ import {
   DeletePasswordDTO,
   EditUserDTO,
   LoginUserPayload,
+  LoginUserResponseDTO,
   PaginationDTO,
   PasswordsPaginatedDTO,
   UpdatePasswordDTO,
 } from "./user.interface";
 
 export const loginUser = createAction<LoginUserPayload>(UserActionTypes.Login);
-export const loginUserSuccess = createAction<string>(
+export const loginUserSuccess = createAction<LoginUserResponseDTO>(
   UserActionTypes.LoginSuccess,
 );
 export const loginUserError = createAction<string | undefined>(
@@ -19,6 +20,15 @@ export const loginUserError = createAction<string | undefined>(
 );
 export const clearLoginUserError = createAction(
   UserActionTypes.ClearLoginError,
+);
+
+export const refreshToken = createAction(UserActionTypes.RefreshToken);
+
+export const refreshTokenSuccess = createAction<LoginUserResponseDTO>(
+  UserActionTypes.RefreshTokenSuccess,
+);
+export const refreshTokenError = createAction<string | undefined>(
+  UserActionTypes.RefreshTokenError,
 );
 
 export const registerUser = createAction<LoginUserPayload>(

@@ -45,3 +45,9 @@ export interface EditUserDTO {
   key: string;
   encryption: "sha512" | "hmac";
 }
+
+export interface LoginUserResponseDTO {
+  access_token: string;
+  key: string;
+  ttl: number;
+}

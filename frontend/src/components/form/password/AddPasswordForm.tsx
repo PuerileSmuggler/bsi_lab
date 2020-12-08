@@ -44,7 +44,7 @@ class LoginForm extends Component<PropType> {
   };
 
   private handleBackButtonClick = () => {
-    this.props.history.push("/home");
+    this.props.history.goBack();
   };
 
   private form: FormApi<IFormValues>;
@@ -112,7 +112,7 @@ class LoginForm extends Component<PropType> {
 }
 
 const mapDispatchToProps = (
-  dispatch: Dispatch<AppDispatch>
+  dispatch: Dispatch<AppDispatch>,
 ): IDispatchProps => ({
   createPassword: (payload: CreatePasswordPayload) =>
     dispatch(createPassword(payload)),

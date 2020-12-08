@@ -5,6 +5,8 @@ import {
   loginUserError,
   loginUserSuccess,
   logoutUser,
+  refreshTokenError,
+  refreshTokenSuccess,
 } from "./user.actions";
 import { IUserState } from "./user.interface";
 
@@ -18,6 +20,12 @@ export const userReducer = createReducer(initState, (builder) =>
   builder
     .addCase(loginUserSuccess, (state) => {
       state.auth = true;
+    })
+    .addCase(refreshTokenSuccess, (state) => {
+      state.auth = true;
+    })
+    .addCase(refreshTokenError, (state) => {
+      state.auth = false;
     })
     .addCase(getAllPasswordsSuccess, (state, action) => {
       state.passwords = action.payload;

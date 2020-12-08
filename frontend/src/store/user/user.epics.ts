@@ -1,6 +1,6 @@
 import { combineEpics, Epic, ofType } from "redux-observable";
-import { from, of } from "rxjs";
-import { catchError, switchMap } from "rxjs/operators";
+import { from, of, timer } from "rxjs";
+import { catchError, delayWhen, switchMap } from "rxjs/operators";
 import { request, tokenStorageKey } from "../../utils/api";
 import { keyStorageKey } from "../../utils/cipher";
 import {
@@ -22,6 +22,9 @@ import {
   loginUserSuccess,
   logoutUser,
   logoutUserSuccess,
+  refreshToken,
+  refreshTokenError,
+  refreshTokenSuccess,
   registerUser,
   registerUserError,
   registerUserSuccess,
@@ -40,7 +43,7 @@ export const loginEpic: Epic = (action$) =>
                 localStorage.setItem(tokenStorageKey, accessToken);
                 localStorage.setItem(keyStorageKey, payload.password);
               }
-              return of(loginUserSuccess("Successfully logged in"));
+              return of(loginUserSuccess(body));
             }),
           ),
         ),
@@ -50,6 +53,53 @@ export const loginEpic: Epic = (action$) =>
             error = "Invalid email or password";
           }
           return of(loginUserError(error));
+        }),
+      ),
+    ),
+  );
+
+export const refreshTokenTimeoutEpic: Epic = (action$) =>
+  action$.pipe(
+    ofType(loginUser.type, refreshTokenSuccess.type),
+    switchMap(() =>
+      from(request("refreshToken", "GET")).pipe(
+        switchMap((response) =>
+          from(response.json()).pipe(
+            delayWhen(({ ttl = 5990 }) => timer((ttl - 10) * 1000)),
+            switchMap((body) => {
+              const { access_token: accessToken } = body;
+              if (accessToken) {
+                localStorage.setItem(tokenStorageKey, accessToken);
+              }
+              return of(refreshTokenSuccess(body));
+            }),
+          ),
+        ),
+        catchError(({ message }) => {
+          return of(refreshTokenError(message));
+        }),
+      ),
+    ),
+  );
+
+export const refreshTokenEpic: Epic = (action$) =>
+  action$.pipe(
+    ofType(refreshToken.type),
+    switchMap(() =>
+      from(request("refreshToken", "GET")).pipe(
+        switchMap((response) =>
+          from(response.json()).pipe(
+            switchMap((body) => {
+              const { access_token: accessToken } = body;
+              if (accessToken) {
+                localStorage.setItem(tokenStorageKey, accessToken);
+              }
+              return of(refreshTokenSuccess(body));
+            }),
+          ),
+        ),
+        catchError(({ message }) => {
+          return of(refreshTokenError(message));
         }),
       ),
     ),
@@ -103,11 +153,11 @@ export const getPasswordsEpic: Epic = (action$) =>
             switchMap((result) => {
               return of(getAllPasswordsSuccess(result));
             }),
-            catchError((error) => {
-              return of(getAllPasswordsError(error));
-            }),
           ),
         ),
+        catchError((error) => {
+          return of(getAllPasswordsError(error));
+        }),
       ),
     ),
   );
@@ -184,4 +234,6 @@ export const userEpics = combineEpics(
   deletePasswordEpic,
   editPasswordEpic,
   editUserEpic,
+  refreshTokenEpic,
+  refreshTokenTimeoutEpic,
 );

@@ -12,11 +12,12 @@ import ChangePasswordContainer from "./containers/ChangePassword/ChangePasswordC
 import Logincontainer from "./containers/Login/LoginContainer";
 import Walletcontainer from "./containers/Wallet/WalletContainer";
 import { AppDispatch, AppState } from "./store";
-import { logoutUser } from "./store/user/user.actions";
+import { logoutUser, refreshToken } from "./store/user/user.actions";
 import { getAuthSelector } from "./store/user/user.selectors";
 
 interface IDispatchProps {
   logout: () => AppDispatch;
+  refreshToken: () => AppDispatch;
 }
 
 interface IStateProps {
@@ -24,6 +25,9 @@ interface IStateProps {
 }
 
 class App extends Component<IStateProps & IDispatchProps> {
+  componentDidMount() {
+    this.props.refreshToken();
+  }
   render() {
     return (
       <AppDiv>
@@ -91,9 +95,10 @@ class App extends Component<IStateProps & IDispatchProps> {
 }
 
 const mapDispatchToProps = (
-  dispatch: Dispatch<AppDispatch>
+  dispatch: Dispatch<AppDispatch>,
 ): IDispatchProps => ({
   logout: () => dispatch(logoutUser()),
+  refreshToken: () => dispatch(refreshToken()),
 });
 
 const mapStateToProps = (state: AppState): IStateProps => ({

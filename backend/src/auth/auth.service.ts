@@ -7,12 +7,12 @@ import { UsersService } from '../user/users.service';
 @Injectable()
 export class AuthService {
   constructor(
-    private appService: UsersService,
+    private usersService: UsersService,
     private jwtService: JwtService,
   ) {}
 
   async validateUser(login: string, password: string): Promise<User | null> {
-    const user = await this.appService.findOne(login);
+    const user = await this.usersService.findOne(login);
     if (!user) throw new HttpException('Unathorized', HttpStatus.UNAUTHORIZED);
     const encryption = user.isPasswordKeptAsHash ? 'hmac' : 'sha512';
     if (user.password === hashPassword(encryption, password, user.salt)) {
@@ -26,6 +26,17 @@ export class AuthService {
     return {
       access_token: this.jwtService.sign(payload),
       key: user.password.substr(0, 16),
+      ttl: 6000,
+    };
+  }
+
+  async refreshToken({ login }: { login: string; id: string }) {
+    const user = await this.usersService.findOne(login);
+    const payload = { login: user.login, id: user.id };
+    return {
+      access_token: this.jwtService.sign(payload),
+      key: user.password.substr(0, 16),
+      ttl: 6000,
     };
   }
 }
