@@ -1,4 +1,4 @@
-import { Button } from "@material-ui/core";
+import { Box, Button } from "@material-ui/core";
 import { Dispatch } from "@reduxjs/toolkit";
 import { createForm, FormApi } from "final-form";
 import React, { Component, Fragment } from "react";
@@ -9,9 +9,11 @@ import { AppDispatch } from "../../../store";
 import { editUser } from "../../../store/user/user.actions";
 import { EditUserDTO } from "../../../store/user/user.interface";
 import { keyStorageKey } from "../../../utils/cipher";
+import { composeValidators, length, required } from "../../../utils/validators";
+import Title from "../../text/Title";
 import CustomField from "../input/CustomField";
 import CustomSelect from "../input/CustomSelect";
-import { ButtonDiv, FormTitle } from "../login/LoginForm.styled";
+import { ButtonDiv } from "../login/LoginForm.styled";
 
 interface IFormValues {
   oldPassword: string;
@@ -53,29 +55,37 @@ class LoginForm extends Component<PropType> {
         <Form
           onSubmit={this.onSubmit}
           form={this.form}
-          subscription={{ pristine: true, submitting: true }}
+          subscription={{ pristine: true, submitting: true, errors: true }}
           render={({ handleSubmit, form }) => (
             <form onSubmit={handleSubmit}>
-              <FormTitle variant="h6" color="textSecondary">
-                Change password
-              </FormTitle>
-              <Field name="oldPassword">
+              <Title>Change password</Title>
+              <Field
+                name="oldPassword"
+                validate={composeValidators([required, length(6)])}
+              >
                 {({ input, meta }) => (
                   <CustomField
                     inputProps={input}
-                    label="Old password"
                     meta={meta}
-                    textFieldProps={{ type: "password" }}
+                    textFieldProps={{
+                      type: "password",
+                      placeholder: "Old password (6+ characters)",
+                    }}
                   />
                 )}
               </Field>
-              <Field name="password">
+              <Field
+                name="password"
+                validate={composeValidators([required, length(6)])}
+              >
                 {({ input, meta }) => (
                   <CustomField
                     inputProps={input}
-                    label="New password"
                     meta={meta}
-                    textFieldProps={{ type: "password" }}
+                    textFieldProps={{
+                      type: "password",
+                      placeholder: "New password (6+ characters)",
+                    }}
                   />
                 )}
               </Field>
@@ -90,9 +100,11 @@ class LoginForm extends Component<PropType> {
                 {({ input, meta }) => (
                   <CustomField
                     inputProps={input}
-                    label="Repeat new password"
                     meta={meta}
-                    textFieldProps={{ type: "password" }}
+                    textFieldProps={{
+                      type: "password",
+                      placeholder: "Repeat new password (6+ characters)",
+                    }}
                   />
                 )}
               </Field>
@@ -100,7 +112,6 @@ class LoginForm extends Component<PropType> {
                 {({ input, meta }) => (
                   <CustomSelect
                     inputProps={input}
-                    label="Encryption"
                     touched={meta.touched}
                     error={meta.error}
                     rows={[
@@ -111,8 +122,20 @@ class LoginForm extends Component<PropType> {
                 )}
               </Field>
               <ButtonDiv>
-                <Button type="submit" variant="contained" color="primary">
-                  Change password
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  disabled={!this.form.getState().valid}
+                >
+                  <Box
+                    fontWeight="fontWeightBold"
+                    fontSize="22px"
+                    color={this.form.getState().valid ? "#000" : "#ccc"}
+                    padding="6px"
+                  >
+                    Change password
+                  </Box>
                 </Button>
               </ButtonDiv>
             </form>
@@ -124,7 +147,7 @@ class LoginForm extends Component<PropType> {
 }
 
 const mapDispatchToProps = (
-  dispatch: Dispatch<AppDispatch>
+  dispatch: Dispatch<AppDispatch>,
 ): IDispatchProps => ({
   editUser: (payload: EditUserDTO) => dispatch(editUser(payload)),
 });

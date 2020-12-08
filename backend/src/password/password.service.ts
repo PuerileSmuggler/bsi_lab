@@ -6,6 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Password } from 'src/database/models/Password';
+import { PasswordResponseDTO } from 'src/dto/Password';
 import {
   CreatePasswordDTO,
   EditPasswordDTO,
@@ -70,6 +71,20 @@ export class PasswordService {
       });
     }
     throw new UnauthorizedException();
+  }
+
+  async findOne(
+    user: UserCredentials,
+    id: string,
+  ): Promise<PasswordResponseDTO> {
+    const passwords = await (await db.User.findByPk(user.id)).getPasswords({
+      where: { id },
+    });
+    if (passwords.length === 0) {
+      throw new HttpException('Not found', HttpStatus.BAD_REQUEST);
+    }
+    const { login, description, webAddress } = passwords[0];
+    return { login, description, webAddress };
   }
 
   async decodePassword({

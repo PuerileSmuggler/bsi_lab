@@ -17,6 +17,9 @@ import {
   getAllPasswords,
   getAllPasswordsError,
   getAllPasswordsSuccess,
+  getPasswordById,
+  getPasswordByIdError,
+  getPasswordByIdSuccess,
   loginUser,
   loginUserError,
   loginUserSuccess,
@@ -162,6 +165,25 @@ export const getPasswordsEpic: Epic = (action$) =>
     ),
   );
 
+export const getPasswordByIdEpic: Epic = (action$) =>
+  action$.pipe(
+    ofType(getPasswordById.type),
+    switchMap(({ payload }) =>
+      from(request(`password/${payload}`, "GET")).pipe(
+        switchMap((response) =>
+          from(response.json()).pipe(
+            switchMap((result) => {
+              return of(getPasswordByIdSuccess(result));
+            }),
+          ),
+        ),
+        catchError((error) => {
+          return of(getPasswordByIdError(error));
+        }),
+      ),
+    ),
+  );
+
 export const deletePasswordEpic: Epic = (action$) =>
   action$.pipe(
     ofType(deletePassword.type),
@@ -177,18 +199,15 @@ export const deletePasswordEpic: Epic = (action$) =>
     ),
   );
 
-export const editPasswordEpic: Epic = (action$) =>
+export const editPasswordEpic: Epic = (action$, _$state, { browserHistory }) =>
   action$.pipe(
     ofType(editPassword.type),
     switchMap(({ payload }) => {
-      const { rowsPerPage, page, ...rest } = payload;
-      return from(request("password/edit", "POST", rest)).pipe(
-        switchMap(() =>
-          of(
-            getAllPasswords({ count: rowsPerPage, page }),
-            editPasswordSuccess("Successfully updated a password"),
-          ),
-        ),
+      return from(request("password/edit", "POST", payload)).pipe(
+        switchMap(() => {
+          browserHistory.push("/home");
+          return of(editPasswordSuccess("Successfully updated a password"));
+        }),
         catchError((error) => {
           return of(editPasswordError(error));
         }),
@@ -236,4 +255,5 @@ export const userEpics = combineEpics(
   editUserEpic,
   refreshTokenEpic,
   refreshTokenTimeoutEpic,
+  getPasswordByIdEpic,
 );

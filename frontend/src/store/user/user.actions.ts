@@ -7,8 +7,9 @@ import {
   LoginUserPayload,
   LoginUserResponseDTO,
   PaginationDTO,
+  PasswordDTO,
+  PasswordResponseDTO,
   PasswordsPaginatedDTO,
-  UpdatePasswordDTO,
 } from "./user.interface";
 
 export const loginUser = createAction<LoginUserPayload>(UserActionTypes.Login);
@@ -65,7 +66,7 @@ export const deletePasswordError = createAction<any>(
   UserActionTypes.DeletePasswordError,
 );
 
-export const editPassword = createAction<UpdatePasswordDTO>(
+export const editPassword = createAction<PasswordDTO>(
   UserActionTypes.EditPassword,
 );
 export const editPasswordSuccess = createAction<string>(
@@ -90,3 +91,13 @@ export const getAllPasswordsSuccess = createAction<PasswordsPaginatedDTO>(
 export const getAllPasswordsError = createAction<any>(
   UserActionTypes.GetAllPasswordsError,
 );
+export const getPasswordById = createAction<string>(
+  UserActionTypes.GetPasswordById,
+);
+export const getPasswordByIdSuccess = createAction<PasswordResponseDTO>(
+  UserActionTypes.GetPasswordByIdSuccess,
+);
+export const getPasswordByIdError = createAction<any>(
+  UserActionTypes.GetPasswordByIdError,
+);
+export const clearPassword = createAction(UserActionTypes.ClearPassword);

@@ -16,18 +16,14 @@ import { FloatingActionButton } from "../../../containers/Wallet/WalletContainer
 import { AppDispatch, AppState } from "../../../store";
 import {
   deletePassword,
-  editPassword,
   getAllPasswords,
 } from "../../../store/user/user.actions";
 import {
   DeletePasswordDTO,
   PaginationDTO,
-  PasswordDTO,
   PasswordsPaginatedDTO,
-  UpdatePasswordDTO,
 } from "../../../store/user/user.interface";
 import { getPasswordsSelector } from "../../../store/user/user.selectors";
-import { keyStorageKey } from "../../../utils/cipher";
 import Title from "../../text/Title";
 import {
   PasswordContainer,
@@ -39,7 +35,6 @@ import PasswordRow from "./PasswordRow";
 interface IDispatchProps {
   getAllPasswords: (payload: PaginationDTO) => AppDispatch;
   deletePassword: (payload: DeletePasswordDTO) => AppDispatch;
-  updatePassword: (payload: UpdatePasswordDTO) => AppDispatch;
 }
 
 interface IStateProps {
@@ -93,16 +88,6 @@ class PasswordTable extends Component<PropType, IState> {
     this.props.getAllPasswords({ page, count: rowsPerPage });
   };
 
-  handleUpdatePassword = (payload: PasswordDTO) => () => {
-    const { page, rowsPerPage } = this.state;
-    this.props.updatePassword({
-      ...payload,
-      page,
-      rowsPerPage,
-      key: localStorage.getItem(keyStorageKey) || "",
-    });
-  };
-
   render() {
     const { passwords } = this.props;
     const { page, rowsPerPage } = this.state;
@@ -139,7 +124,6 @@ class PasswordTable extends Component<PropType, IState> {
                     data={data}
                     key={index}
                     deletePassword={this.handleDeleteRow}
-                    updatePassword={this.handleUpdatePassword}
                   />
                 ))}
               </TableBody>
@@ -166,8 +150,6 @@ const mapDispatchToProps = (dispatch: Dispatch): IDispatchProps => ({
     dispatch(getAllPasswords(payload)),
   deletePassword: (payload: DeletePasswordDTO) =>
     dispatch(deletePassword(payload)),
-  updatePassword: (payload: UpdatePasswordDTO) =>
-    dispatch(editPassword(payload)),
 });
 
 const mapStateToProps = (state: AppState): IStateProps => ({

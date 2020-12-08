@@ -7,6 +7,8 @@ export const LogoContainer = styled.div`
   font-weight: bold !important;
   font-size: 48px;
   padding: 28px;
+  user-select: none;
+  cursor: pointer;
   & :last-of-type {
     background: #ff9900;
     color: #000000;

@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import {
   CreatePasswordDTO,
@@ -21,6 +30,12 @@ export class PasswordController {
   @Post('edit')
   async editPassword(@Req() req, @Body() body: Partial<EditPasswordDTO>) {
     return await this.passwordService.editPassword(req.user, body);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':id')
+  async getPassword(@Req() req, @Param() params) {
+    return await this.passwordService.findOne(req.user, params.id);
   }
 
   @UseGuards(JwtAuthGuard)

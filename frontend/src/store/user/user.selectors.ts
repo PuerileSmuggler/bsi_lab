@@ -1,6 +1,6 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { AppState } from "..";
-import { PasswordsPaginatedDTO } from "./user.interface";
+import { PasswordResponseDTO, PasswordsPaginatedDTO } from "./user.interface";
 
 const authSelector = (state: AppState): boolean => state.user.auth;
 
@@ -9,6 +9,9 @@ const loginErrorSelector = (state: AppState): string | undefined =>
 
 const passwordsSelector = (state: AppState): PasswordsPaginatedDTO =>
   state.user.passwords;
+
+const passwordSelector = (state: AppState): PasswordResponseDTO | undefined =>
+  state.user.password;
 
 export const getAuthSelector = createSelector(authSelector, (auth) => auth);
 
@@ -20,4 +23,9 @@ export const getLoginErrorSelector = createSelector(
 export const getPasswordsSelector = createSelector(
   passwordsSelector,
   (passwords) => passwords,
+);
+
+export const getPasswordSelector = createSelector(
+  passwordSelector,
+  (password) => password,
 );

@@ -2,6 +2,7 @@ export interface IUserState {
   auth: boolean;
   passwords: PasswordsPaginatedDTO;
   errors: { [key: string]: string | undefined };
+  password?: PasswordResponseDTO;
 }
 
 export interface LoginUserPayload {
@@ -18,11 +19,6 @@ export interface CreatePasswordPayload {
 
 export interface PasswordDTO extends CreatePasswordPayload {
   id: number;
-}
-
-export interface UpdatePasswordDTO extends PasswordDTO {
-  rowsPerPage: number;
-  page: number;
 }
 
 export interface PaginationDTO {
@@ -50,4 +46,10 @@ export interface LoginUserResponseDTO {
   access_token: string;
   key: string;
   ttl: number;
+}
+
+export interface PasswordResponseDTO {
+  login: string;
+  description: string;
+  webAddress: string;
 }

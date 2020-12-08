@@ -82,6 +82,9 @@ class App extends Component<IStateProps & IDispatchProps> {
           <PrivateRoute exact path="/addPassword" to="/login">
             <AddPasswordContainer />
           </PrivateRoute>
+          <PrivateRoute exact path="/addPassword/:id" to="/login">
+            <AddPasswordContainer />
+          </PrivateRoute>
           <PrivateRoute exact path="/changePassword" to="/login">
             <ChangePasswordContainer />
           </PrivateRoute>

@@ -1,10 +1,15 @@
 import React, { PureComponent } from "react";
+import { RouteComponentProps, withRouter } from "react-router-dom";
 import { LogoContainer } from "./Logo.styled";
 
-export class Logo extends PureComponent {
+export class Logo extends PureComponent<RouteComponentProps> {
   render() {
     return (
-      <LogoContainer>
+      <LogoContainer
+        onClick={() => {
+          this.props.history.push("/home");
+        }}
+      >
         <span>Password</span>
         <span>hub</span>
       </LogoContainer>
@@ -12,4 +17,4 @@ export class Logo extends PureComponent {
   }
 }
 
-export default Logo;
+export default withRouter(Logo);
