@@ -1,6 +1,7 @@
 export interface IUserState {
   auth: boolean;
   passwords: PasswordsPaginatedDTO;
+  errors: { [key: string]: string | undefined };
 }
 
 export interface LoginUserPayload {

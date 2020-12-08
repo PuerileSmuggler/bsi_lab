@@ -12,28 +12,33 @@ import {
 
 export const loginUser = createAction<LoginUserPayload>(UserActionTypes.Login);
 export const loginUserSuccess = createAction<string>(
-  UserActionTypes.LoginSuccess
+  UserActionTypes.LoginSuccess,
 );
-export const loginUserError = createAction<any>(UserActionTypes.LoginError);
+export const loginUserError = createAction<string | undefined>(
+  UserActionTypes.LoginError,
+);
+export const clearLoginUserError = createAction(
+  UserActionTypes.ClearLoginError,
+);
 
 export const registerUser = createAction<LoginUserPayload>(
-  UserActionTypes.Register
+  UserActionTypes.Register,
 );
 export const registerUserSuccess = createAction<string>(
-  UserActionTypes.RegisterSuccess
+  UserActionTypes.RegisterSuccess,
 );
 export const registerUserError = createAction<any>(
-  UserActionTypes.RegisterError
+  UserActionTypes.RegisterError,
 );
 
 export const createPassword = createAction<CreatePasswordPayload>(
-  UserActionTypes.CreatePassword
+  UserActionTypes.CreatePassword,
 );
 export const createPasswordSuccess = createAction<string>(
-  UserActionTypes.CreatePasswordSuccess
+  UserActionTypes.CreatePasswordSuccess,
 );
 export const createPasswordError = createAction<any>(
-  UserActionTypes.CreatePasswordError
+  UserActionTypes.CreatePasswordError,
 );
 
 export const logoutUser = createAction(UserActionTypes.Logout);
@@ -41,37 +46,37 @@ export const logoutUserSuccess = createAction(UserActionTypes.LogoutSuccess);
 export const logoutUserError = createAction(UserActionTypes.LogoutError);
 
 export const deletePassword = createAction<DeletePasswordDTO>(
-  UserActionTypes.DeletePassword
+  UserActionTypes.DeletePassword,
 );
 export const deletePasswordSuccess = createAction<string>(
-  UserActionTypes.DeletePasswordSuccess
+  UserActionTypes.DeletePasswordSuccess,
 );
 export const deletePasswordError = createAction<any>(
-  UserActionTypes.DeletePasswordError
+  UserActionTypes.DeletePasswordError,
 );
 
 export const editPassword = createAction<UpdatePasswordDTO>(
-  UserActionTypes.EditPassword
+  UserActionTypes.EditPassword,
 );
 export const editPasswordSuccess = createAction<string>(
-  UserActionTypes.EditPasswordSuccess
+  UserActionTypes.EditPasswordSuccess,
 );
 export const editPasswordError = createAction<any>(
-  UserActionTypes.EditPasswordError
+  UserActionTypes.EditPasswordError,
 );
 
 export const editUser = createAction<EditUserDTO>(UserActionTypes.EditUser);
 export const editUserSuccess = createAction<string>(
-  UserActionTypes.EditUserSuccess
+  UserActionTypes.EditUserSuccess,
 );
 export const editUserError = createAction<any>(UserActionTypes.EditUserError);
 
 export const getAllPasswords = createAction<PaginationDTO>(
-  UserActionTypes.GetAllPasswords
+  UserActionTypes.GetAllPasswords,
 );
 export const getAllPasswordsSuccess = createAction<PasswordsPaginatedDTO>(
-  UserActionTypes.GetAllPasswordsSuccess
+  UserActionTypes.GetAllPasswordsSuccess,
 );
 export const getAllPasswordsError = createAction<any>(
-  UserActionTypes.GetAllPasswordsError
+  UserActionTypes.GetAllPasswordsError,
 );

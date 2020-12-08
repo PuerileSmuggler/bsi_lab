@@ -5,9 +5,13 @@ import React, { Component, Fragment } from "react";
 import { Field, Form } from "react-final-form";
 import { connect } from "react-redux";
 import { Link, RouteComponentProps, withRouter } from "react-router-dom";
-import { AppDispatch } from "../../../store";
-import { loginUser } from "../../../store/user/user.actions";
+import { AppDispatch, AppState } from "../../../store";
+import {
+  clearLoginUserError,
+  loginUser,
+} from "../../../store/user/user.actions";
 import { LoginUserPayload } from "../../../store/user/user.interface";
+import { getLoginErrorSelector } from "../../../store/user/user.selectors";
 import {
   composeValidators,
   email,
@@ -24,11 +28,16 @@ interface IFormValues {
   encryption: string;
 }
 
-interface IDispatchProps {
-  loginUser: (payload: IFormValues) => AppDispatch;
+interface IStateProps {
+  error?: string;
 }
 
-type PropType = RouteComponentProps & IDispatchProps;
+interface IDispatchProps {
+  loginUser: (payload: IFormValues) => AppDispatch;
+  clearLoginUserError: () => AppDispatch;
+}
+
+type PropType = IStateProps & RouteComponentProps & IDispatchProps;
 
 class LoginForm extends Component<PropType> {
   constructor(props: PropType) {
@@ -36,6 +45,10 @@ class LoginForm extends Component<PropType> {
     this.form = createForm({
       onSubmit: this.onSubmit,
     });
+  }
+
+  componentWillUnmount() {
+    this.props.clearLoginUserError();
   }
   private onSubmit = (formValues: IFormValues) => {
     const { loginUser } = this.props;
@@ -45,6 +58,7 @@ class LoginForm extends Component<PropType> {
   private form: FormApi<IFormValues>;
 
   render() {
+    const { error } = this.props;
     return (
       <Fragment>
         <Form
@@ -54,6 +68,11 @@ class LoginForm extends Component<PropType> {
           render={({ handleSubmit, form }) => (
             <form onSubmit={handleSubmit}>
               <Title>Login</Title>
+              {error && (
+                <Box color="red" padding="12px 0">
+                  {error}
+                </Box>
+              )}
               <Field
                 name="login"
                 validate={composeValidators([required, email])}
@@ -117,10 +136,18 @@ class LoginForm extends Component<PropType> {
   }
 }
 
+const mapStateToProps = (state: AppState): IStateProps => ({
+  error: getLoginErrorSelector(state),
+});
+
 const mapDispatchToProps = (
   dispatch: Dispatch<AppDispatch>,
 ): IDispatchProps => ({
   loginUser: (payload: LoginUserPayload) => dispatch(loginUser(payload)),
+  clearLoginUserError: () => dispatch(clearLoginUserError()),
 });
 
-export default connect(null, mapDispatchToProps)(withRouter(LoginForm));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(withRouter(LoginForm));

@@ -2,6 +2,7 @@ export const UserActionTypes = {
   Login: "USER_LOGIN",
   LoginSuccess: "USER_LOGIN_SUCCESS",
   LoginError: "USER_LOGIN_ERROR",
+  ClearLoginError: "USER_CLEAR_LOGIN_ERROR",
   Register: "USER_REGISTER",
   RegisterSuccess: "USER_REGISTER_SUCCESS",
   RegisterError: "USER_REGISTER_ERROR",

@@ -1,7 +1,7 @@
 export const request = async (
   url: string,
   method: "POST" | "GET" | "DELETE",
-  body?: any
+  body?: any,
 ) => {
   return fetch(`http:\\\\localhost:4000/${url}`, {
     method,

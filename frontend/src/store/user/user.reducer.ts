@@ -1,6 +1,8 @@
 import { createReducer } from "@reduxjs/toolkit";
 import {
+  clearLoginUserError,
   getAllPasswordsSuccess,
+  loginUserError,
   loginUserSuccess,
   logoutUser,
 } from "./user.actions";
@@ -9,6 +11,7 @@ import { IUserState } from "./user.interface";
 const initState: IUserState = {
   auth: false,
   passwords: { count: 0, passwords: [] },
+  errors: {},
 };
 
 export const userReducer = createReducer(initState, (builder) =>
@@ -22,4 +25,10 @@ export const userReducer = createReducer(initState, (builder) =>
     .addCase(logoutUser, (state) => {
       state.auth = false;
     })
+    .addCase(loginUserError, (state, action) => {
+      state.errors["login"] = action.payload;
+    })
+    .addCase(clearLoginUserError, (state) => {
+      state.errors["login"] = undefined;
+    }),
 );

@@ -41,14 +41,18 @@ export const loginEpic: Epic = (action$) =>
                 localStorage.setItem(keyStorageKey, payload.password);
               }
               return of(loginUserSuccess("Successfully logged in"));
-            })
-          )
+            }),
+          ),
         ),
-        catchError((error) => {
+        catchError(({ message }) => {
+          let error;
+          if (message === "401") {
+            error = "Invalid email or password";
+          }
           return of(loginUserError(error));
-        })
-      )
-    )
+        }),
+      ),
+    ),
   );
 
 export const registerEpic: Epic = (action$, _$state, { browserHistory }) =>
@@ -62,15 +66,15 @@ export const registerEpic: Epic = (action$, _$state, { browserHistory }) =>
         }),
         catchError((error) => {
           return of(registerUserError(error));
-        })
-      )
-    )
+        }),
+      ),
+    ),
   );
 
 export const createPasswordEpic: Epic = (
   action$,
   _$state,
-  { browserHistory }
+  { browserHistory },
 ) =>
   action$.pipe(
     ofType(createPassword.type),
@@ -79,14 +83,14 @@ export const createPasswordEpic: Epic = (
         switchMap(() => {
           browserHistory.push("/home");
           return of(
-            registerUserSuccess("Successfully created a password entry")
+            registerUserSuccess("Successfully created a password entry"),
           );
         }),
         catchError((error) => {
           return of(loginUserError(error));
-        })
-      )
-    )
+        }),
+      ),
+    ),
   );
 
 export const getPasswordsEpic: Epic = (action$) =>
@@ -101,11 +105,11 @@ export const getPasswordsEpic: Epic = (action$) =>
             }),
             catchError((error) => {
               return of(getAllPasswordsError(error));
-            })
-          )
-        )
-      )
-    )
+            }),
+          ),
+        ),
+      ),
+    ),
   );
 
 export const deletePasswordEpic: Epic = (action$) =>
@@ -118,9 +122,9 @@ export const deletePasswordEpic: Epic = (action$) =>
         }),
         catchError((error) => {
           return of(deletePasswordError(error));
-        })
-      )
-    )
+        }),
+      ),
+    ),
   );
 
 export const editPasswordEpic: Epic = (action$) =>
@@ -132,14 +136,14 @@ export const editPasswordEpic: Epic = (action$) =>
         switchMap(() =>
           of(
             getAllPasswords({ count: rowsPerPage, page }),
-            editPasswordSuccess("Successfully updated a password")
-          )
+            editPasswordSuccess("Successfully updated a password"),
+          ),
         ),
         catchError((error) => {
           return of(editPasswordError(error));
-        })
+        }),
       );
-    })
+    }),
   );
 
 export const editUserEpic: Epic = (action$) =>
@@ -150,14 +154,14 @@ export const editUserEpic: Epic = (action$) =>
         switchMap(() =>
           of(
             logoutUser(),
-            editUserSuccess("Successfully updated master password")
-          )
+            editUserSuccess("Successfully updated master password"),
+          ),
         ),
         catchError((error) => {
           return of(editUserError(error));
-        })
+        }),
       );
-    })
+    }),
   );
 
 export const logoutEpic: Epic = (action$, _, { browserHistory }) =>
@@ -168,7 +172,7 @@ export const logoutEpic: Epic = (action$, _, { browserHistory }) =>
       localStorage.removeItem(tokenStorageKey);
       browserHistory.push("/login");
       return of(logoutUserSuccess());
-    })
+    }),
   );
 
 export const userEpics = combineEpics(
@@ -179,5 +183,5 @@ export const userEpics = combineEpics(
   getPasswordsEpic,
   deletePasswordEpic,
   editPasswordEpic,
-  editUserEpic
+  editUserEpic,
 );

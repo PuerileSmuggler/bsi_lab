@@ -13,11 +13,7 @@ export class AuthService {
 
   async validateUser(login: string, password: string): Promise<User | null> {
     const user = await this.appService.findOne(login);
-    if (!user)
-      throw new HttpException(
-        'Invalid email or password',
-        HttpStatus.BAD_REQUEST,
-      );
+    if (!user) throw new HttpException('Unathorized', HttpStatus.UNAUTHORIZED);
     const encryption = user.isPasswordKeptAsHash ? 'hmac' : 'sha512';
     if (user.password === hashPassword(encryption, password, user.salt)) {
       return user;
