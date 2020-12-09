@@ -2,9 +2,9 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt/dist/jwt.service';
 import * as moment from 'moment';
 import { Op } from 'sequelize';
-import db from 'src/database/initializeDatabase';
-import { User } from 'src/database/models/User';
-import { hashPassword } from 'src/utils/crypto';
+import db from '../../src/database/initializeDatabase';
+import { User } from '../../src/database/models/User';
+import { hashPassword } from '../../src/utils/crypto';
 import { UsersService } from '../user/users.service';
 
 @Injectable()
@@ -81,7 +81,6 @@ export class AuthService {
       },
       order: [['createdAt', 'desc']],
     });
-    console.log(subLogin.length, subIp.length);
     if (subLogin.length === 0 && subIp.length === 0) {
       return null;
     }

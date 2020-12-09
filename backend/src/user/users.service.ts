@@ -5,8 +5,12 @@ import {
   InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { RegisterUserDTO, UserCredentials } from 'src/dto/User';
-import { decodePassword, encodePassword, hashPassword } from 'src/utils/crypto';
+import { RegisterUserDTO, UserCredentials } from '../../src/dto/User';
+import {
+  decodePassword,
+  encodePassword,
+  hashPassword,
+} from '../../src/utils/crypto';
 import db from '../database/initializeDatabase';
 
 @Injectable()
