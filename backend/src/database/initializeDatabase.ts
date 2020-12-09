@@ -1,4 +1,5 @@
 import { Sequelize } from 'sequelize';
+import LoginLog from './models/LoginLog';
 import Password from './models/Password';
 import User from './models/User';
 
@@ -16,6 +17,7 @@ try {
 const db = {
   User: User(sequelize),
   Password: Password(sequelize),
+  LoginLog: LoginLog(sequelize),
   sequelize,
   Sequelize,
 };

@@ -7,11 +7,15 @@ import { connect } from "react-redux";
 import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 import { AppDispatch, AppState } from "../../../store";
 import {
+  clearIpBlock,
   clearLoginUserError,
   loginUser,
 } from "../../../store/user/user.actions";
 import { LoginUserPayload } from "../../../store/user/user.interface";
-import { getLoginErrorSelector } from "../../../store/user/user.selectors";
+import {
+  getIpBlockedSelector,
+  getLoginErrorSelector,
+} from "../../../store/user/user.selectors";
 import {
   composeValidators,
   email,
@@ -30,11 +34,13 @@ interface IFormValues {
 
 interface IStateProps {
   error?: string;
+  ipBlocked: boolean;
 }
 
 interface IDispatchProps {
   loginUser: (payload: IFormValues) => AppDispatch;
   clearLoginUserError: () => AppDispatch;
+  clearIpBlock: () => AppDispatch;
 }
 
 type PropType = IStateProps & RouteComponentProps & IDispatchProps;
@@ -50,6 +56,9 @@ class LoginForm extends Component<PropType> {
   componentWillUnmount() {
     this.props.clearLoginUserError();
   }
+  handleClearIpBlock = () => {
+    this.props.clearIpBlock();
+  };
   private onSubmit = (formValues: IFormValues) => {
     const { loginUser } = this.props;
     loginUser(formValues);
@@ -58,7 +67,7 @@ class LoginForm extends Component<PropType> {
   private form: FormApi<IFormValues>;
 
   render() {
-    const { error } = this.props;
+    const { error, ipBlocked } = this.props;
     return (
       <Fragment>
         <Form
@@ -71,6 +80,25 @@ class LoginForm extends Component<PropType> {
               {error && (
                 <Box color="red" padding="12px 0">
                   {error}
+                </Box>
+              )}
+              {ipBlocked && (
+                <Box display="flex" justifyContent="center">
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={this.handleClearIpBlock}
+                  >
+                    <Box display="flex" alignItems="center">
+                      <Box
+                        fontWeight="fontWeightBold"
+                        fontSize="12px"
+                        color="#000"
+                      >
+                        Lift ban
+                      </Box>
+                    </Box>
+                  </Button>
                 </Box>
               )}
               <Field
@@ -138,6 +166,7 @@ class LoginForm extends Component<PropType> {
 
 const mapStateToProps = (state: AppState): IStateProps => ({
   error: getLoginErrorSelector(state),
+  ipBlocked: getIpBlockedSelector(state),
 });
 
 const mapDispatchToProps = (
@@ -145,6 +174,7 @@ const mapDispatchToProps = (
 ): IDispatchProps => ({
   loginUser: (payload: LoginUserPayload) => dispatch(loginUser(payload)),
   clearLoginUserError: () => dispatch(clearLoginUserError()),
+  clearIpBlock: () => dispatch(clearIpBlock()),
 });
 
 export default connect(

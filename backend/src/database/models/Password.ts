@@ -29,6 +29,8 @@ export class Password
   public webAddress!: string;
   public description!: string;
   public login!: string;
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
 
   public getUser!: BelongsToGetAssociationMixin<User>;
 

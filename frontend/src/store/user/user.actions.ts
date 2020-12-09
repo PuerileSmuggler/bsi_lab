@@ -101,3 +101,11 @@ export const getPasswordByIdError = createAction<any>(
   UserActionTypes.GetPasswordByIdError,
 );
 export const clearPassword = createAction(UserActionTypes.ClearPassword);
+export const clearIpBlock = createAction(UserActionTypes.ClearIpBlock);
+export const clearIpBlockSuccess = createAction(
+  UserActionTypes.ClearIpBlockSuccess,
+);
+export const clearIpBlockError = createAction<any>(
+  UserActionTypes.ClearIpBlockError,
+);
+export const setIpBlock = createAction(UserActionTypes.SetIpBlock);

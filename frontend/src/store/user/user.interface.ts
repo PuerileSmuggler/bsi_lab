@@ -3,6 +3,7 @@ export interface IUserState {
   passwords: PasswordsPaginatedDTO;
   errors: { [key: string]: string | undefined };
   password?: PasswordResponseDTO;
+  ipBlocked: boolean;
 }
 
 export interface LoginUserPayload {

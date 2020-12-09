@@ -1,5 +1,6 @@
 import { createReducer } from "@reduxjs/toolkit";
 import {
+  clearIpBlockSuccess,
   clearLoginUserError,
   clearPassword,
   getAllPasswordsSuccess,
@@ -10,6 +11,7 @@ import {
   refreshToken,
   refreshTokenError,
   refreshTokenSuccess,
+  setIpBlock,
 } from "./user.actions";
 import { IUserState } from "./user.interface";
 
@@ -18,6 +20,7 @@ const initState: IUserState = {
   passwords: { count: 0, passwords: [] },
   errors: {},
   password: undefined,
+  ipBlocked: false,
 };
 
 export const userReducer = createReducer(initState, (builder) =>
@@ -48,6 +51,13 @@ export const userReducer = createReducer(initState, (builder) =>
     })
     .addCase(clearPassword, (state) => {
       state.password = undefined;
+    })
+    .addCase(setIpBlock, (state) => {
+      state.ipBlocked = true;
+    })
+    .addCase(clearIpBlockSuccess, (state) => {
+      state.ipBlocked = false;
+      state.errors["login"] = undefined;
     })
     .addCase(refreshToken, (state) => {
       state.auth = true;

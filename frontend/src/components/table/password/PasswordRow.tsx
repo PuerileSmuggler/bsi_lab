@@ -179,11 +179,11 @@ class PasswordRow extends Component<PropType, IState> {
                       <Box
                         fontWeight="fontWeightBold"
                         fontSize="12px"
-                        color="#fff"
+                        color="#000"
                       >
                         {visible ? "Hide password" : "Show password"}
                       </Box>
-                      <Box color="#fff" marginLeft="8px">
+                      <Box color="#000" marginLeft="8px">
                         <VisibilityIcon fontSize="small" />
                       </Box>
                     </Box>
@@ -197,11 +197,11 @@ class PasswordRow extends Component<PropType, IState> {
                       <Box
                         fontWeight="fontWeightBold"
                         fontSize="12px"
-                        color="#fff"
+                        color="#000"
                       >
                         Edit
                       </Box>
-                      <Box color="#fff" marginLeft="8px">
+                      <Box color="#000" marginLeft="8px">
                         <EditIcon fontSize="small" />
                       </Box>
                     </Box>
@@ -215,11 +215,11 @@ class PasswordRow extends Component<PropType, IState> {
                       <Box
                         fontWeight="fontWeightBold"
                         fontSize="12px"
-                        color="#fff"
+                        color="#000"
                       >
                         Delete
                       </Box>
-                      <Box color="#fff" marginLeft="8px">
+                      <Box color="#000" marginLeft="8px">
                         <DeleteIcon fontSize="small" />
                       </Box>
                     </Box>

@@ -31,4 +31,8 @@ export const UserActionTypes = {
   GetPasswordByIdSuccess: "USER_GET_PASSWORD_BY_ID_SUCCESS",
   GetPasswordByIdError: "USER_GET_PASSWORD_BY_ID_ERROR",
   ClearPassword: "USER_CLEAR_PASSWORD",
+  ClearIpBlock: "USER_CLEAR_IP_BLOCK",
+  ClearIpBlockError: "USER_CLEAR_IP_BLOCK_ERROR",
+  ClearIpBlockSuccess: "USER_CLEAR_IP_BLOCK_SUCCESS",
+  SetIpBlock: "USER_SET_IP_BLOCK",
 };

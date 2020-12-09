@@ -14,7 +14,7 @@ export const request = async (
     if (response.status === 200 || response.status === 201) {
       return response;
     }
-    throw new Error(response.status.toString());
+    throw await response.json();
   });
 };
 

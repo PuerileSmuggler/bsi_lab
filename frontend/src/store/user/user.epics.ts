@@ -4,6 +4,9 @@ import { catchError, delayWhen, switchMap } from "rxjs/operators";
 import { request, tokenStorageKey } from "../../utils/api";
 import { keyStorageKey } from "../../utils/cipher";
 import {
+  clearIpBlock,
+  clearIpBlockError,
+  clearIpBlockSuccess,
   createPassword,
   deletePassword,
   deletePasswordError,
@@ -31,6 +34,7 @@ import {
   registerUser,
   registerUserError,
   registerUserSuccess,
+  setIpBlock,
 } from "./user.actions";
 
 export const loginEpic: Epic = (action$) =>
@@ -50,9 +54,19 @@ export const loginEpic: Epic = (action$) =>
             }),
           ),
         ),
-        catchError(({ message }) => {
+        catchError((err) => {
           let error;
-          if (message === "401") {
+          if (err.timeout) {
+            if (err.timeout === 9999) {
+              return of(
+                loginUserError(
+                  "Your IP has been blocked. To lift the ban click the button below.",
+                ),
+                setIpBlock(),
+              );
+            }
+            error = `Due to many login attempts a timeout of ${err.timeout} seconds has been set`;
+          } else if (err.statusCode === 401) {
             error = "Invalid email or password";
           }
           return of(loginUserError(error));
@@ -119,6 +133,21 @@ export const registerEpic: Epic = (action$, _$state, { browserHistory }) =>
         }),
         catchError((error) => {
           return of(registerUserError(error));
+        }),
+      ),
+    ),
+  );
+
+export const clearIpBlockEpic: Epic = (action$) =>
+  action$.pipe(
+    ofType(clearIpBlock.type),
+    switchMap(() =>
+      from(request("auth/clear", "GET")).pipe(
+        switchMap(() => {
+          return of(clearIpBlockSuccess());
+        }),
+        catchError((error) => {
+          return of(clearIpBlockError(error));
         }),
       ),
     ),
@@ -256,4 +285,5 @@ export const userEpics = combineEpics(
   refreshTokenEpic,
   refreshTokenTimeoutEpic,
   getPasswordByIdEpic,
+  clearIpBlockEpic,
 );

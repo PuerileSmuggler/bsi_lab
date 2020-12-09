@@ -12,6 +12,7 @@ const passwordsSelector = (state: AppState): PasswordsPaginatedDTO =>
 
 const passwordSelector = (state: AppState): PasswordResponseDTO | undefined =>
   state.user.password;
+const ipBlockedSelector = (state: AppState): boolean => state.user.ipBlocked;
 
 export const getAuthSelector = createSelector(authSelector, (auth) => auth);
 
@@ -28,4 +29,8 @@ export const getPasswordsSelector = createSelector(
 export const getPasswordSelector = createSelector(
   passwordSelector,
   (password) => password,
+);
+export const getIpBlockedSelector = createSelector(
+  ipBlockedSelector,
+  (ipBlocked) => ipBlocked,
 );
