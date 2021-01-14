@@ -20,9 +20,15 @@ import {
   getAllPasswords,
   getAllPasswordsError,
   getAllPasswordsSuccess,
+  getAllSharedPasswords,
+  getAllSharedPasswordsError,
+  getAllSharedPasswordsSuccess,
   getPasswordById,
   getPasswordByIdError,
   getPasswordByIdSuccess,
+  getSharingPasswords,
+  getSharingPasswordsError,
+  getSharingPasswordsSuccess,
   loginUser,
   loginUserError,
   loginUserSuccess,
@@ -34,7 +40,13 @@ import {
   registerUser,
   registerUserError,
   registerUserSuccess,
+  removeSharePassword,
+  removeSharePasswordError,
+  removeSharePasswordSuccess,
   setIpBlock,
+  sharePassword,
+  sharePasswordError,
+  sharePasswordSuccess,
 } from "./user.actions";
 
 export const loginEpic: Epic = (action$) =>
@@ -194,6 +206,90 @@ export const getPasswordsEpic: Epic = (action$) =>
     ),
   );
 
+export const getSharedPasswordsEpic: Epic = (action$) =>
+  action$.pipe(
+    ofType(
+      getAllSharedPasswords.type,
+      removeSharePasswordSuccess.type,
+      sharePasswordSuccess.type,
+    ),
+    switchMap(({ payload }) =>
+      from(request("password/shared", "POST", payload)).pipe(
+        switchMap((response) =>
+          from(response.json()).pipe(
+            switchMap((result) => {
+              return of(getAllSharedPasswordsSuccess(result));
+            }),
+          ),
+        ),
+        catchError((error) => {
+          return of(getAllSharedPasswordsError(error));
+        }),
+      ),
+    ),
+  );
+
+export const getSharingPasswordsEpic: Epic = (action$) =>
+  action$.pipe(
+    ofType(
+      getSharingPasswords.type,
+      removeSharePasswordSuccess.type,
+      sharePasswordSuccess.type,
+    ),
+    switchMap(({ payload }) =>
+      from(request("password/sharing", "POST", payload)).pipe(
+        switchMap((response) =>
+          from(response.json()).pipe(
+            switchMap((result) => {
+              return of(getSharingPasswordsSuccess(result));
+            }),
+          ),
+        ),
+        catchError((error) => {
+          return of(getSharingPasswordsError(error));
+        }),
+      ),
+    ),
+  );
+
+export const removeSharingPasswordsEpic: Epic = (action$) =>
+  action$.pipe(
+    ofType(removeSharePassword.type),
+    switchMap(({ payload }) =>
+      from(request("password/share", "DELETE", payload)).pipe(
+        switchMap((response) =>
+          from(response.json()).pipe(
+            switchMap(() => {
+              return of(removeSharePasswordSuccess());
+            }),
+          ),
+        ),
+        catchError((error) => {
+          return of(removeSharePasswordError(error));
+        }),
+      ),
+    ),
+  );
+
+export const sharePasswordEpic: Epic = (action$) =>
+  action$.pipe(
+    ofType(sharePassword.type),
+    switchMap(({ payload }) =>
+      from(request("password/share", "POST", payload)).pipe(
+        switchMap((response) =>
+          from(response.json()).pipe(
+            switchMap(() => {
+              return of(sharePasswordSuccess());
+            }),
+          ),
+        ),
+        catchError((error) => {
+          return of(sharePasswordError(error));
+        }),
+      ),
+    ),
+  );
+
 export const getPasswordByIdEpic: Epic = (action$) =>
   action$.pipe(
     ofType(getPasswordById.type),
@@ -286,4 +382,8 @@ export const userEpics = combineEpics(
   refreshTokenTimeoutEpic,
   getPasswordByIdEpic,
   clearIpBlockEpic,
+  getSharedPasswordsEpic,
+  sharePasswordEpic,
+  getSharingPasswordsEpic,
+  removeSharingPasswordsEpic,
 );

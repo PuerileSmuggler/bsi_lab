@@ -4,7 +4,9 @@ import {
   clearLoginUserError,
   clearPassword,
   getAllPasswordsSuccess,
+  getAllSharedPasswordsSuccess,
   getPasswordByIdSuccess,
+  getSharingPasswordsSuccess,
   loginUserError,
   loginUserSuccess,
   logoutUser,
@@ -18,6 +20,8 @@ import { IUserState } from "./user.interface";
 const initState: IUserState = {
   auth: false,
   passwords: { count: 0, passwords: [] },
+  sharedPasswords: { count: 0, passwords: [] },
+  sharingPasswords: { count: 0, passwords: [] },
   errors: {},
   password: undefined,
   ipBlocked: false,
@@ -36,6 +40,12 @@ export const userReducer = createReducer(initState, (builder) =>
     })
     .addCase(getAllPasswordsSuccess, (state, action) => {
       state.passwords = action.payload;
+    })
+    .addCase(getAllSharedPasswordsSuccess, (state, action) => {
+      state.sharedPasswords = action.payload;
+    })
+    .addCase(getSharingPasswordsSuccess, (state, action) => {
+      state.sharingPasswords = action.payload;
     })
     .addCase(logoutUser, (state) => {
       state.auth = false;

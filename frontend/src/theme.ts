@@ -19,6 +19,12 @@ export default createMuiTheme({
         },
       },
     },
+    MuiTab: {
+      wrapper: {
+        color: 'white',
+        textTransform: 'none'
+      }
+    },
     MuiSelect: {
       root: {
         backgroundColor: "#000",

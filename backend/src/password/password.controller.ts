@@ -6,13 +6,14 @@ import {
   Param,
   Post,
   Req,
-  UseGuards,
+  UseGuards
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { SharePasswordDTO } from 'src/dto/Password';
 import {
   CreatePasswordDTO,
   EditPasswordDTO,
-  PaginationDTO,
+  PaginationDTO
 } from 'src/dto/User';
 import { PasswordService } from './password.service';
 
@@ -49,5 +50,29 @@ export class PasswordController {
   @Post('')
   async getPasswords(@Req() req, @Body() body: PaginationDTO) {
     return this.passwordService.getPasswords(req.user, body);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('shared')
+  async getSharedPasswords(@Req() req) {
+    return this.passwordService.getSharedPasswords(req.user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('sharing')
+  async getSharingPasswords(@Req() req) {
+    return this.passwordService.getSharingPasswords(req.user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('share')
+  async sharePassword(@Req() req, @Body() body: SharePasswordDTO) {
+    return this.passwordService.sharePassword(req.user, body);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('share')
+  async removeSharing(@Req() req, @Body() body: { sharingId: number, owner: boolean }) {
+    return this.passwordService.removeSharing(req.user, body);
   }
 }

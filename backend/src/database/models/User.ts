@@ -8,9 +8,10 @@ import {
   HasManyHasAssociationMixin,
   Model,
   Optional,
-  Sequelize,
+  Sequelize
 } from 'sequelize';
 import { Password } from './Password';
+import { PasswordUsers } from './PasswordUsers';
 
 interface UserAttributes {
   id: number;
@@ -18,6 +19,8 @@ interface UserAttributes {
   password: string;
   salt: string;
   isPasswordKeptAsHash: boolean;
+  passwordUsersOwner?: Array<PasswordUsers>;
+  passwordUsers?: Array<PasswordUsers>;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -31,6 +34,8 @@ export class User extends Model<UserAttributes, UserCreationAttributes>
   public password!: string;
   public salt!: string;
   public isPasswordKeptAsHash!: boolean;
+  public readonly passwordUsersOwner?: Array<PasswordUsers>;
+  public readonly passwordUsers?: Array<PasswordUsers>;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 
@@ -50,6 +55,8 @@ export class User extends Model<UserAttributes, UserCreationAttributes>
       foreignKey: 'userId',
       as: 'passwords',
     });
+    User.hasMany(db.PasswordUsers, { sourceKey: 'id', foreignKey: 'ownerId', as: 'passwordUsersOwner' });
+    User.hasMany(db.PasswordUsers, { sourceKey: 'id', foreignKey: 'userId', as: 'passwordUsers' });
   }
 }
 

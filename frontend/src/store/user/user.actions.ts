@@ -10,6 +10,8 @@ import {
   PasswordDTO,
   PasswordResponseDTO,
   PasswordsPaginatedDTO,
+  RemoveSharePasswordDTO,
+  SharePasswordDTO,
 } from "./user.interface";
 
 export const loginUser = createAction<LoginUserPayload>(UserActionTypes.Login);
@@ -91,6 +93,24 @@ export const getAllPasswordsSuccess = createAction<PasswordsPaginatedDTO>(
 export const getAllPasswordsError = createAction<any>(
   UserActionTypes.GetAllPasswordsError,
 );
+export const getAllSharedPasswords = createAction<PaginationDTO>(
+  UserActionTypes.GetAllSharedPasswords,
+);
+export const getAllSharedPasswordsSuccess = createAction<PasswordsPaginatedDTO>(
+  UserActionTypes.GetAllSharedPasswordsSuccess,
+);
+export const getAllSharedPasswordsError = createAction<any>(
+  UserActionTypes.GetAllSharedPasswordsError,
+);
+export const getSharingPasswords = createAction<PaginationDTO>(
+  UserActionTypes.sharingPasswords,
+);
+export const getSharingPasswordsSuccess = createAction<PasswordsPaginatedDTO>(
+  UserActionTypes.sharingPasswordsSuccess,
+);
+export const getSharingPasswordsError = createAction<any>(
+  UserActionTypes.sharingPasswordsError,
+);
 export const getPasswordById = createAction<string>(
   UserActionTypes.GetPasswordById,
 );
@@ -109,3 +129,27 @@ export const clearIpBlockError = createAction<any>(
   UserActionTypes.ClearIpBlockError,
 );
 export const setIpBlock = createAction(UserActionTypes.SetIpBlock);
+
+export const sharePassword = createAction<SharePasswordDTO>(
+  UserActionTypes.sharePassword,
+);
+
+export const sharePasswordSuccess = createAction(
+  UserActionTypes.sharePasswordSuccess,
+);
+
+export const sharePasswordError = createAction<any>(
+  UserActionTypes.sharePasswordError,
+);
+
+export const removeSharePassword = createAction<RemoveSharePasswordDTO>(
+  UserActionTypes.removeSharingPasswords,
+);
+
+export const removeSharePasswordSuccess = createAction(
+  UserActionTypes.removeSharingPasswordsSuccess,
+);
+
+export const removeSharePasswordError = createAction<any>(
+  UserActionTypes.removeSharingPasswordsError,
+);

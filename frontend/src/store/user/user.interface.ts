@@ -1,6 +1,8 @@
 export interface IUserState {
   auth: boolean;
   passwords: PasswordsPaginatedDTO;
+  sharedPasswords: PasswordsPaginatedDTO;
+  sharingPasswords: PasswordsPaginatedDTO;
   errors: { [key: string]: string | undefined };
   password?: PasswordResponseDTO;
   ipBlocked: boolean;
@@ -20,6 +22,8 @@ export interface CreatePasswordPayload {
 
 export interface PasswordDTO extends CreatePasswordPayload {
   id: number;
+  user?: string;
+  shareId?: number;
 }
 
 export interface PaginationDTO {
@@ -30,6 +34,7 @@ export interface PaginationDTO {
 export interface PasswordsPaginatedDTO {
   passwords: Array<PasswordDTO>;
   count: number;
+  key?: string;
 }
 
 export interface DeletePasswordDTO {
@@ -53,4 +58,15 @@ export interface PasswordResponseDTO {
   login: string;
   description: string;
   webAddress: string;
+}
+
+export interface SharePasswordDTO {
+  passwordId: number;
+  email: string;
+  key: string;
+}
+
+export interface RemoveSharePasswordDTO {
+  sharingId: number;
+  owner: boolean;
 }

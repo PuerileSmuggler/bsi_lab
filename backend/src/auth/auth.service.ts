@@ -2,10 +2,10 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt/dist/jwt.service';
 import * as moment from 'moment';
 import { Op } from 'sequelize';
-import db from '../../src/database/initializeDatabase';
-import { User } from '../../src/database/models/User';
-import { hashPassword } from '../../src/utils/crypto';
+import db from '../database/initializeDatabase';
+import { User } from '../database/models/User';
 import { UsersService } from '../user/users.service';
+import { hashPassword } from '../utils/crypto';
 
 @Injectable()
 export class AuthService {

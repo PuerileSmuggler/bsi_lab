@@ -1,6 +1,7 @@
 import { Sequelize } from 'sequelize';
 import LoginLog from './models/LoginLog';
 import Password from './models/Password';
+import PasswordUsers from './models/PasswordUsers';
 import User from './models/User';
 
 let sequelize: Sequelize;
@@ -18,6 +19,7 @@ const db = {
   User: User(sequelize),
   Password: Password(sequelize),
   LoginLog: LoginLog(sequelize),
+  PasswordUsers: PasswordUsers(sequelize),
   sequelize,
   Sequelize,
 };

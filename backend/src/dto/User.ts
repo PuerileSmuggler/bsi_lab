@@ -24,4 +24,5 @@ export interface UserCredentials {
 export interface PaginationDTO {
   count: number;
   page: number;
+  key?: string;
 }

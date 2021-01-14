@@ -3,15 +3,11 @@ import {
   HttpStatus,
   Injectable,
   InternalServerErrorException,
-  UnauthorizedException,
+  UnauthorizedException
 } from '@nestjs/common';
-import { RegisterUserDTO, UserCredentials } from '../../src/dto/User';
-import {
-  decodePassword,
-  encodePassword,
-  hashPassword,
-} from '../../src/utils/crypto';
 import db from '../database/initializeDatabase';
+import { RegisterUserDTO, UserCredentials } from '../dto/User';
+import { decodePassword, encodePassword, hashPassword } from '../utils/crypto';
 
 @Injectable()
 export class UsersService {
@@ -44,6 +40,14 @@ export class UsersService {
       oldPassword ===
       hashPassword(encryption, password.oldPassword, dbUser.salt)
     ) {
+          await db.PasswordUsers.update(
+        {
+          key: password.password
+        }, {
+          where: {
+            ownerId: user.id
+          }
+        });
       await db.User.update(
         {
           password: hashPassword(password.encryption, password.password, salt),

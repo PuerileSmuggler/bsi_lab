@@ -12,6 +12,13 @@ const passwordsSelector = (state: AppState): PasswordsPaginatedDTO =>
 
 const passwordSelector = (state: AppState): PasswordResponseDTO | undefined =>
   state.user.password;
+
+const sharedPasswordsSelector = (state: AppState): PasswordsPaginatedDTO =>
+  state.user.sharedPasswords;
+
+const sharingPasswordsSelector = (state: AppState): PasswordsPaginatedDTO =>
+  state.user.sharingPasswords;
+
 const ipBlockedSelector = (state: AppState): boolean => state.user.ipBlocked;
 
 export const getAuthSelector = createSelector(authSelector, (auth) => auth);
@@ -24,6 +31,16 @@ export const getLoginErrorSelector = createSelector(
 export const getPasswordsSelector = createSelector(
   passwordsSelector,
   (passwords) => passwords,
+);
+
+export const getSharedPasswordsSelector = createSelector(
+  sharedPasswordsSelector,
+  (sharedPasswords) => sharedPasswords,
+);
+
+export const getSharingPasswordsSelector = createSelector(
+  sharingPasswordsSelector,
+  (sharingPasswords) => sharingPasswords,
 );
 
 export const getPasswordSelector = createSelector(

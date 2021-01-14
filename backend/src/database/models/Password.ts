@@ -3,7 +3,7 @@ import {
   BelongsToGetAssociationMixin,
   DataTypes,
   Model,
-  Optional,
+  Optional
 } from 'sequelize';
 import { User } from './User';
 
@@ -41,6 +41,11 @@ export class Password
   public static associate(db) {
     Password.belongsTo(db.User, {
       targetKey: 'id',
+    });
+    Password.hasMany(db.PasswordUsers, {
+      foreignKey: 'passwordId',
+      sourceKey: 'id',
+      as: 'passwordUsers'
     });
   }
 }

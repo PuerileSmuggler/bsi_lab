@@ -38,6 +38,9 @@ interface IForm {}
 interface IProps {
   data: PasswordDTO;
   deletePassword: (id: number) => () => void;
+  shared?: boolean;
+  handleDialogOpen?: () => void;
+  handleRemoveSharing?: () => void;
 }
 
 type PropType = IProps & RouteComponentProps;
@@ -83,7 +86,7 @@ class PasswordRow extends Component<PropType, IState> {
   }
 
   render() {
-    const { data } = this.props;
+    const { data, shared, handleDialogOpen, handleRemoveSharing } = this.props;
     const { visible, open } = this.state;
     return (
       <Fragment>
@@ -104,6 +107,13 @@ class PasswordRow extends Component<PropType, IState> {
               </Typography>
             </Link>
           </PasswordCellNoDivider>
+          {data.user && (
+            <PasswordCellNoDivider>
+              <Typography component="div">
+                <Box color="#fff">{data.user}</Box>
+              </Typography>
+            </PasswordCellNoDivider>
+          )}
           <PasswordCellNoDivider>
             <Box display="flex" flexDirection="row" justifyContent="flex-start">
               <Typography>{data.login}</Typography>
@@ -154,7 +164,10 @@ class PasswordRow extends Component<PropType, IState> {
                             });
 
                             navigator.clipboard.writeText(
-                              decipherPassword(data.password),
+                              decipherPassword(
+                                data.password,
+                                shared ? data.key : undefined,
+                              ),
                             );
                           }}
                         >
@@ -164,7 +177,10 @@ class PasswordRow extends Component<PropType, IState> {
                     </Box>
                     <Subtitle>
                       {visible
-                        ? decipherPassword(data.password)
+                        ? decipherPassword(
+                            data.password,
+                            shared ? data.key : undefined,
+                          )
                         : data.password}
                     </Subtitle>
                   </div>
@@ -188,28 +204,52 @@ class PasswordRow extends Component<PropType, IState> {
                       </Box>
                     </Box>
                   </Button>
+                  {!shared && (
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={this.handleEditChange}
+                    >
+                      <Box display="flex" alignItems="center">
+                        <Box
+                          fontWeight="fontWeightBold"
+                          fontSize="12px"
+                          color="#000"
+                        >
+                          Edit
+                        </Box>
+                        <Box color="#000" marginLeft="8px">
+                          <EditIcon fontSize="small" />
+                        </Box>
+                      </Box>
+                    </Button>
+                  )}
+                  {!shared && handleDialogOpen && (
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handleDialogOpen}
+                    >
+                      <Box display="flex" alignItems="center">
+                        <Box
+                          fontWeight="fontWeightBold"
+                          fontSize="12px"
+                          color="#000"
+                        >
+                          Share
+                        </Box>
+                        <Box color="#000" marginLeft="8px">
+                          <EditIcon fontSize="small" />
+                        </Box>
+                      </Box>
+                    </Button>
+                  )}
                   <Button
                     variant="contained"
                     color="primary"
-                    onClick={this.handleEditChange}
-                  >
-                    <Box display="flex" alignItems="center">
-                      <Box
-                        fontWeight="fontWeightBold"
-                        fontSize="12px"
-                        color="#000"
-                      >
-                        Edit
-                      </Box>
-                      <Box color="#000" marginLeft="8px">
-                        <EditIcon fontSize="small" />
-                      </Box>
-                    </Box>
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={this.props.deletePassword(data.id)}
+                    onClick={
+                      handleRemoveSharing || this.props.deletePassword(data.id)
+                    }
                   >
                     <Box display="flex" alignItems="center">
                       <Box
