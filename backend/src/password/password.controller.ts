@@ -41,8 +41,8 @@ export class PasswordController {
 
   @UseGuards(JwtAuthGuard)
   @Delete('')
-  async deletePassword(@Body() body: { id: number }) {
-    await this.passwordService.deletePassword(Number(body.id));
+  async deletePassword(@Req() req, @Body() body: { id: number }) {
+    await this.passwordService.deletePassword(req.user, Number(body.id));
     return {};
   }
 

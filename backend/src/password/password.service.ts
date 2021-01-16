@@ -29,6 +29,9 @@ export class PasswordService {
     const passwords = await dbUser.getPasswords({
       offset: page * count,
       limit: count,
+      where: {
+        removed: false,
+      }
     });
     const dbCount = await dbUser.countPasswords();
     return { passwords, count: dbCount };
@@ -40,7 +43,12 @@ export class PasswordService {
         userId: user.id,
       },
       include: [
-        db.Password as any
+        { 
+          model: db.Password as any,
+          where: {
+            removed: false
+          },
+        }
       ]
     });
     const passwords: Array<SharedPasswordsDTO> = [];
@@ -62,7 +70,20 @@ export class PasswordService {
     const passwords: Array<SharedPasswordsDTO> = [];
     const passwordUsers = await db.User.findByPk(user.id, {
       include: [
-        { model: db.PasswordUsers as any, as: 'passwordUsersOwner' , include: [db.Password as any, { model: db.User as any, as: 'user'}]}
+        { model: db.PasswordUsers as any,
+          as: 'passwordUsersOwner' ,
+          include: 
+            [
+              { model: db.Password as any,
+                where: {
+                  removed: false
+                }
+              },
+              { model: db.User as any,
+                as: 'user',
+              }
+            ]
+          }
       ]
     });
     passwordUsers.passwordUsersOwner.map((pwdUsr) => {
@@ -112,18 +133,43 @@ export class PasswordService {
   }
 
   async createPassword(user: UserCredentials, password: CreatePasswordDTO) {
-    return await db.Password.create({
+    const createdPassword = await db.Password.create({
       userId: user.id,
       ...password,
+      removed: false,
       password: encodePassword(password.password, password.key),
     }).catch((error) => {
       throw new HttpException(error, HttpStatus.BAD_REQUEST);
     });
+    await db.DataChange.create({
+      actionType: 'CREATE',
+      passwordId: createdPassword.id,
+      userId: user.id,
+      fields: ['login', 'description', 'webAddress', 'password'],
+      currentValues: [password.login, password.description, password.webAddress, password.password],
+      previousValues: [password.login, password.description, password.webAddress, password.password],
+    });
+    return createdPassword;
   }
 
-  async deletePassword(id: number) {
-    await (await db.Password.findByPk(id)).destroy().catch(() => {
+  async deletePassword(user: UserCredentials, id: number) {
+    const password = await db.Password.findByPk(id);
+    await password.update({
+      removed: true
+    }, {
+      where: {
+        userId: user.id,
+      }
+    }).catch(() => {
       throw new InternalServerErrorException();
+    });
+    await db.DataChange.create({
+      actionType: 'DELETE',
+      passwordId: id,
+      userId: user.id,
+      fields: ['login', 'description', 'webAddress', 'password'],
+      currentValues: [password.login, password.description, password.webAddress, password.password],
+      previousValues: [password.login, password.description, password.webAddress, password.password],
     });
   }
 
@@ -147,14 +193,23 @@ export class PasswordService {
   async editPassword(
     user: UserCredentials,
     newPassword: Partial<EditPasswordDTO>,
-  ): Promise<[number, Array<Password>]> {
+  ): Promise<Password> {
     const dbUser = await db.User.findByPk(user.id);
     if (await dbUser.hasPassword(newPassword.id)) {
       const { id, password, ...rest } = newPassword;
-      return await db.Password.update(
+      const oldPassword = await db.Password.findByPk(id);
+      await db.DataChange.create({
+        actionType: 'UPDATE',
+        userId: user.id,
+        passwordId: id,
+        fields: ['login', 'description', 'webAddress', 'password'],
+        currentValues: [ newPassword.login, newPassword.description, newPassword.webAddress, password ? encodePassword(password, newPassword.key) : oldPassword.password],
+        previousValues: [ oldPassword.login, oldPassword.description, oldPassword.webAddress, oldPassword.password ],
+      });
+      return await oldPassword.update(
         {
           ...rest,
-          password: encodePassword(password, newPassword.key),
+          password: password ? encodePassword(password, newPassword.key) : oldPassword.password,
         },
         {
           where: {

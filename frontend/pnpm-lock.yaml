@@ -16,6 +16,7 @@ dependencies:
   '@types/react-router-dom': 5.1.7
   final-form: 4.20.1
   history: 4.10.1
+  moment: 2.29.1
   react: 16.14.0
   react-dom: 16.14.0_react@16.14.0
   react-final-form: 6.5.2_final-form@4.20.1+react@16.14.0
@@ -7863,6 +7864,10 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-NKmAlESf6jMGym1++R0Ra7wvhV+wFW63FaSOFPwRahvea0gMUcGUhVeAg/0BC0wiv9ih5NYPB1Wn1UEI1/L+xQ==
+  /moment/2.29.1:
+    dev: false
+    resolution:
+      integrity: sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ==
   /move-concurrently/1.0.1:
     dependencies:
       aproba: 1.2.0
@@ -12214,6 +12219,7 @@ specifiers:
   '@types/webpack-env': ^1.15.3
   final-form: ^4.20.1
   history: ^4.10.1
+  moment: ^2.29.1
   react: ^16.13.1
   react-dom: ^16.13.1
   react-final-form: ^6.5.1

@@ -1,4 +1,5 @@
 import { Sequelize } from 'sequelize';
+import DataChange from './models/DataChange';
 import LoginLog from './models/LoginLog';
 import Password from './models/Password';
 import PasswordUsers from './models/PasswordUsers';
@@ -20,6 +21,7 @@ const db = {
   Password: Password(sequelize),
   LoginLog: LoginLog(sequelize),
   PasswordUsers: PasswordUsers(sequelize),
+  DataChange: DataChange(sequelize),
   sequelize,
   Sequelize,
 };

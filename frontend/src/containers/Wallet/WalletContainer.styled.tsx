@@ -6,3 +6,9 @@ export const FloatingActionButton = styled(Fab)`
   bottom: 32px;
   right: 16px;
 `;
+
+export const FloatingActionButtonAbove = styled(Fab)`
+  position: fixed !important;
+  bottom: 112px;
+  right: 16px;
+`;

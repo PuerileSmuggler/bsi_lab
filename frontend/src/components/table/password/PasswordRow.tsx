@@ -5,6 +5,7 @@ import {
   IconButton,
   Link,
   TableRow,
+  Tooltip,
   Typography,
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -33,14 +34,13 @@ interface IState {
   open: boolean;
 }
 
-interface IForm {}
-
 interface IProps {
   data: PasswordDTO;
   deletePassword: (id: number) => () => void;
   shared?: boolean;
   handleDialogOpen?: () => void;
   handleRemoveSharing?: () => void;
+  editMode: boolean;
 }
 
 type PropType = IProps & RouteComponentProps;
@@ -86,7 +86,13 @@ class PasswordRow extends Component<PropType, IState> {
   }
 
   render() {
-    const { data, shared, handleDialogOpen, handleRemoveSharing } = this.props;
+    const {
+      data,
+      shared,
+      handleDialogOpen,
+      handleRemoveSharing,
+      editMode,
+    } = this.props;
     const { visible, open } = this.state;
     return (
       <Fragment>
@@ -205,24 +211,35 @@ class PasswordRow extends Component<PropType, IState> {
                     </Box>
                   </Button>
                   {!shared && (
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={this.handleEditChange}
+                    <Tooltip
+                      title={
+                        editMode
+                          ? ""
+                          : "You have to switch to the edit mode in order to edit passwords"
+                      }
                     >
-                      <Box display="flex" alignItems="center">
-                        <Box
-                          fontWeight="fontWeightBold"
-                          fontSize="12px"
-                          color="#000"
+                      <div>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={this.handleEditChange}
+                          disabled={!editMode}
                         >
-                          Edit
-                        </Box>
-                        <Box color="#000" marginLeft="8px">
-                          <EditIcon fontSize="small" />
-                        </Box>
-                      </Box>
-                    </Button>
+                          <Box display="flex" alignItems="center">
+                            <Box
+                              fontWeight="fontWeightBold"
+                              fontSize="12px"
+                              color="#000"
+                            >
+                              Edit
+                            </Box>
+                            <Box color="#000" marginLeft="8px">
+                              <EditIcon fontSize="small" />
+                            </Box>
+                          </Box>
+                        </Button>
+                      </div>
+                    </Tooltip>
                   )}
                   {!shared && handleDialogOpen && (
                     <Button
@@ -244,26 +261,38 @@ class PasswordRow extends Component<PropType, IState> {
                       </Box>
                     </Button>
                   )}
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={
-                      handleRemoveSharing || this.props.deletePassword(data.id)
+                  <Tooltip
+                    title={
+                      editMode
+                        ? ""
+                        : "You have to switch to the edit mode in order to delete passwords"
                     }
                   >
-                    <Box display="flex" alignItems="center">
-                      <Box
-                        fontWeight="fontWeightBold"
-                        fontSize="12px"
-                        color="#000"
+                    <div>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={
+                          handleRemoveSharing ||
+                          this.props.deletePassword(data.id)
+                        }
+                        disabled={!editMode}
                       >
-                        Delete
-                      </Box>
-                      <Box color="#000" marginLeft="8px">
-                        <DeleteIcon fontSize="small" />
-                      </Box>
-                    </Box>
-                  </Button>
+                        <Box display="flex" alignItems="center">
+                          <Box
+                            fontWeight="fontWeightBold"
+                            fontSize="12px"
+                            color="#000"
+                          >
+                            Delete
+                          </Box>
+                          <Box color="#000" marginLeft="8px">
+                            <DeleteIcon fontSize="small" />
+                          </Box>
+                        </Box>
+                      </Button>
+                    </div>
+                  </Tooltip>
                 </div>
               </PasswordRowCollapseContainer>
             </Collapse>

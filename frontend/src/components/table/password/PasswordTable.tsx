@@ -18,12 +18,17 @@ import {
   TextField,
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
+import ListAltIcon from "@material-ui/icons/ListAlt";
 import { Dispatch } from "@reduxjs/toolkit";
 import React, { ChangeEvent, Component } from "react";
 import { connect } from "react-redux";
 import { RouteComponentProps, withRouter } from "react-router-dom";
-import { FloatingActionButton } from "../../../containers/Wallet/WalletContainer.styled";
+import {
+  FloatingActionButton,
+  FloatingActionButtonAbove,
+} from "../../../containers/Wallet/WalletContainer.styled";
 import { AppDispatch, AppState } from "../../../store";
+import { getEditModeSelector } from "../../../store/config/user.selectors";
 import {
   deletePassword,
   getAllPasswords,
@@ -66,6 +71,7 @@ interface IStateProps {
   passwords: PasswordsPaginatedDTO;
   sharedPasswords: PasswordsPaginatedDTO;
   sharingPasswords: PasswordsPaginatedDTO;
+  editMode: boolean;
 }
 
 interface IState {
@@ -99,6 +105,10 @@ class PasswordTable extends Component<PropType, IState> {
 
   handleAddPasswordClick = () => {
     this.props.history.push("/addPassword");
+  };
+
+  handleChangleLogClick = () => {
+    this.props.history.push("/changeLog");
   };
 
   handleChangePage = (
@@ -163,7 +173,12 @@ class PasswordTable extends Component<PropType, IState> {
   };
 
   render() {
-    const { passwords, sharedPasswords, sharingPasswords } = this.props;
+    const {
+      passwords,
+      sharedPasswords,
+      sharingPasswords,
+      editMode,
+    } = this.props;
     const { page, rowsPerPage, value, dialogOpen, chosenUser } = this.state;
     return (
       <PasswordContainer>
@@ -212,6 +227,12 @@ class PasswordTable extends Component<PropType, IState> {
             </Box>
           </DialogActions>
         </Dialog>
+        <FloatingActionButtonAbove
+          color="secondary"
+          onClick={this.handleChangleLogClick}
+        >
+          <ListAltIcon />
+        </FloatingActionButtonAbove>
         <FloatingActionButton
           color="secondary"
           onClick={this.handleAddPasswordClick}
@@ -256,6 +277,7 @@ class PasswordTable extends Component<PropType, IState> {
                         key={index}
                         deletePassword={this.handleDeleteRow}
                         handleDialogOpen={this.handleDialogOpen(data.id)}
+                        editMode={editMode}
                       />
                     ))}
                   </TableBody>
@@ -293,6 +315,7 @@ class PasswordTable extends Component<PropType, IState> {
                           false,
                         )}
                         shared
+                        editMode={editMode}
                       />
                     ))}
                   </TableBody>
@@ -335,6 +358,7 @@ class PasswordTable extends Component<PropType, IState> {
                           true,
                         )}
                         shared
+                        editMode={editMode}
                       />
                     ))}
                   </TableBody>
@@ -379,6 +403,7 @@ const mapStateToProps = (state: AppState): IStateProps => ({
   passwords: getPasswordsSelector(state),
   sharedPasswords: getSharedPasswordsSelector(state),
   sharingPasswords: getSharingPasswordsSelector(state),
+  editMode: getEditModeSelector(state),
 });
 
 export default connect(

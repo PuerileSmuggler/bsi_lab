@@ -1,38 +1,44 @@
 'use strict';
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('passwords', {
+    await queryInterface.createTable('dataChanges', {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
       },
-      password: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
       userId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
           model: 'users',
+          key: 'id',
         },
       },
-      webAddress: {
-        type: Sequelize.STRING,
+      passwordId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'passwords',
+          key: 'id',
+        },
+      },
+      actionType: {
+        type: Sequelize.ENUM('CREATE', 'UPDATE', 'DELETE'),
         allowNull: false,
       },
-      description: {
-        type: Sequelize.STRING,
+      fields: {
+        type: Sequelize.ARRAY(Sequelize.STRING),
         allowNull: false,
       },
-      login: {
-        type: Sequelize.STRING,
+      currentValues: {
+        type: Sequelize.ARRAY(Sequelize.STRING),
         allowNull: false,
       },
-      removed: {
-        type: Sequelize.BOOLEAN,
+      previousValues: {
+        type: Sequelize.ARRAY(Sequelize.STRING),
         allowNull: false,
       },
       createdAt: {
@@ -45,7 +51,8 @@ module.exports = {
       },
     });
   },
+
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('passwords');
+    await queryInterface.dropTable('dataChanges');
   },
 };

@@ -14,6 +14,7 @@ interface PasswordAttributes {
   webAddress: string;
   description: string;
   login: string;
+  removed: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -29,6 +30,7 @@ export class Password
   public webAddress!: string;
   public description!: string;
   public login!: string;
+  public removed!: boolean;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 
@@ -83,6 +85,10 @@ export default function (sequelize): typeof Password {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      removed: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+      }
     },
     {
       sequelize,

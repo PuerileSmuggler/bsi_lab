@@ -46,7 +46,7 @@ import {
   setIpBlock,
   sharePassword,
   sharePasswordError,
-  sharePasswordSuccess,
+  sharePasswordSuccess
 } from "./user.actions";
 
 export const loginEpic: Epic = (action$) =>
@@ -315,7 +315,12 @@ export const deletePasswordEpic: Epic = (action$) =>
     switchMap(({ payload }) =>
       from(request("password", "DELETE", payload)).pipe(
         switchMap(() => {
-          return of(deletePasswordSuccess("Successfully deleted a password"));
+          return of(
+            deletePasswordSuccess("Successfully deleted a password"),
+            getAllPasswords({ count: 10, page: 0 }),
+            getSharingPasswords({ count: 10, page: 0 }),
+            getAllSharedPasswords({ count: 10, page: 0 })
+          );
         }),
         catchError((error) => {
           return of(deletePasswordError(error));

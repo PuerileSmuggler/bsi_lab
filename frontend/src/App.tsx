@@ -1,6 +1,12 @@
-import { AppBar, Link as MUILink, Typography } from "@material-ui/core";
+import {
+  AppBar,
+  Box,
+  Link as MUILink,
+  Switch as MUISwitch,
+  Typography,
+} from "@material-ui/core";
 import { Dispatch } from "@reduxjs/toolkit";
-import React, { Component } from "react";
+import React, { ChangeEvent, Component } from "react";
 import { connect } from "react-redux";
 import { Link, Redirect, Route, Switch } from "react-router-dom";
 import { AppDiv } from "./App.styled";
@@ -8,27 +14,42 @@ import PrivateRoute from "./components/router/PrivateRoute";
 import PublicRoute from "./components/router/PublicRoute";
 import Logo from "./components/text/Logo";
 import AddPasswordContainer from "./containers/AddPassword/AddPasswordContainer";
+import ChangeLog from "./containers/ChangeLog/ChangeLog";
 import ChangePasswordContainer from "./containers/ChangePassword/ChangePasswordContainer";
 import Logincontainer from "./containers/Login/LoginContainer";
 import Walletcontainer from "./containers/Wallet/WalletContainer";
 import { AppDispatch, AppState } from "./store";
+import { setEditMode } from "./store/config/config.actions";
+import { getEditModeSelector } from "./store/config/user.selectors";
 import { logoutUser, refreshToken } from "./store/user/user.actions";
 import { getAuthSelector } from "./store/user/user.selectors";
 
 interface IDispatchProps {
   logout: () => AppDispatch;
   refreshToken: () => AppDispatch;
+  setEditMode: (payload: boolean) => AppDispatch;
 }
 
 interface IStateProps {
   auth: boolean;
+  editMode: boolean;
 }
 
 class App extends Component<IStateProps & IDispatchProps> {
   componentDidMount() {
     this.props.refreshToken();
   }
+
+  handleChangeEditMode = (
+    _: ChangeEvent<HTMLInputElement>,
+    checked: boolean,
+  ) => {
+    const { setEditMode } = this.props;
+    setEditMode(checked);
+  };
+
   render() {
+    const { editMode } = this.props;
     return (
       <AppDiv>
         <AppBar
@@ -66,6 +87,14 @@ class App extends Component<IStateProps & IDispatchProps> {
               >
                 <Typography color="primary">Logout</Typography>
               </MUILink>
+              <Box display="flex" alignItems="center">
+                <Typography color="primary">Edit mode</Typography>
+                <MUISwitch
+                  color="primary"
+                  onChange={this.handleChangeEditMode}
+                  checked={editMode}
+                />
+              </Box>
             </div>
           )}
         </AppBar>
@@ -88,6 +117,9 @@ class App extends Component<IStateProps & IDispatchProps> {
           <PrivateRoute exact path="/changePassword" to="/login">
             <ChangePasswordContainer />
           </PrivateRoute>
+          <PrivateRoute exact path="/changeLog" to="/login">
+            <ChangeLog />
+          </PrivateRoute>
           <Route exact path="/*">
             <Redirect to="/home" />
           </Route>
@@ -102,10 +134,12 @@ const mapDispatchToProps = (
 ): IDispatchProps => ({
   logout: () => dispatch(logoutUser()),
   refreshToken: () => dispatch(refreshToken()),
+  setEditMode: (payload: boolean) => dispatch(setEditMode(payload)),
 });
 
 const mapStateToProps = (state: AppState): IStateProps => ({
   auth: getAuthSelector(state),
+  editMode: getEditModeSelector(state),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
